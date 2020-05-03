@@ -4,20 +4,21 @@ create database web;
 use web;
 
 create table users (
-PK_users int unsigned primary key auto_increment,
+id int unsigned primary key auto_increment,
 email varchar(50) not null unique,
 photo varchar(255),
 first_name varchar(50),
 last_name varchar(50),
 password varchar(50),
 birth_date date,
+vendor boolean,
 creation_date datetime,
 mod_date datetime
 );
 
 create table adresses (
-PK_adresses int unsigned primary key auto_increment,
-PK_users int unsigned,
+id int unsigned primary key auto_increment,
+users_id int unsigned,
 name varchar(255),
 row1 varchar(255),
 row2 varchar(255),
@@ -28,12 +29,12 @@ prefix varchar(4),
 tlf int,
 creation_date datetime,
 mod_date datetime,
-constraint FK_adresses_users FOREIGN KEY (PK_users) references users(PK_users)
+constraint FK_adresses_users FOREIGN KEY (users_id) references users(id)
 );
 
 create table shops (
-PK_shops int unsigned primary key auto_increment,
-PK_users int unsigned,
+id int unsigned primary key auto_increment,
+users_id int unsigned,
 name varchar(100),
 description text(500),
 video varchar(255),
@@ -43,13 +44,13 @@ facebook varchar(255),
 promoted boolean,
 creation_date datetime,
 mod_date datetime,
-constraint FK_shops_users FOREIGN KEY (PK_users) references users(PK_users)
+constraint FK_shops_users FOREIGN KEY (users_id) references users(id)
 );
 
 
 create table products (
-PK_products int unsigned primary key auto_increment,
-PK_shops int unsigned,
+id int unsigned primary key auto_increment,
+shops_id int unsigned,
 category varchar(50),
 name varchar(50),
 price decimal(7,2),
@@ -59,54 +60,55 @@ description text(500),
 color varchar(255),
 creation_date datetime,
 mod_date datetime,
-constraint FK_products_shops FOREIGN KEY (PK_shops) references shops(PK_shops)
+constraint FK_products_shops FOREIGN KEY (shops_id) references shops(id)
 );
 
 create table photos (
-PK_photos int unsigned primary key auto_increment,
-PK_products int unsigned,
+id int unsigned primary key auto_increment,
+products_id int unsigned,
 path varchar(255),
-constraint FK_photos_products FOREIGN KEY (PK_products) references products(PK_products)
+constraint FK_photos_products FOREIGN KEY (products_id) references products(id)
 );
 
 create table orders (
-PK_orders int unsigned primary key auto_increment,
-PK_users int unsigned,
+id int unsigned primary key auto_increment,
+users_id int unsigned,
 finished boolean,
 sell_date datetime,
 creation_date datetime,
 mod_date datetime,
-constraint FK_oreders_users foreign key (PK_users) references users(PK_users)
+constraint FK_oreders_users foreign key (users_id) references users(id)
 );
 
 
 create table orders_products (
-PK_orders_products int primary key auto_increment,
-PK_orders int unsigned,
-PK_products int unsigned,
+id int primary key auto_increment,
+orders_id int unsigned,
+products_id int unsigned,
 price decimal(7,2),
 quantity smallint,
-constraint FK_oreders_products_orders foreign key (PK_orders) references orders(PK_orders),
-constraint FK_orders_products_products foreign key (PK_products) references products(PK_products)
+constraint FK_oreders_products_orders foreign key (orders_id) references orders(id),
+constraint FK_orders_products_products foreign key (products_id) references products(id)
 );
 
 create table wishlist (
-PK_wishlist int primary key auto_increment,
-PK_users int unsigned,
-PK_products int unsigned,
+id int primary key auto_increment,
+users_id int unsigned,
+products_id int unsigned,
 creation_date datetime,
 mod_date datetime,
-constraint FK_wishlist_users foreign key (PK_users) references users(PK_users),
-constraint FK_wishlist_products foreign key (PK_products) references products(PK_products)
+constraint FK_wishlist_users foreign key (users_id) references users(id),
+constraint FK_wishlist_products foreign key (products_id) references products(id)
 );
 
 create table ratings (
-PK_ratings int unsigned primary key auto_increment,
-PK_users int unsigned,
-PK_products int unsigned,
+id int unsigned primary key auto_increment,
+users_id int unsigned,
+products_id int unsigned,
 rating decimal (2,1),
-constraint FK_ratings_users FOREIGN KEY (PK_users) references users(PK_users),
-constraint FK_rating_products FOREIGN KEY (PK_products) references products(PK_products)
+comment varchar(255),
+constraint FK_ratings_users FOREIGN KEY (users_id) references users(id),
+constraint FK_rating_products FOREIGN KEY (products_id) references products(id)
 );
 
 
