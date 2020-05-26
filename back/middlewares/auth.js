@@ -33,7 +33,7 @@ async function userIsAuthenticated(req, res, next) {
       throw generateError("Wrong token.");
     }
 
-    //Check if token expedittion time is grater than users's last password change
+    //Check if token expedittion time is valid
     const { id, iat } = decoded;
 
     console.log(new Date(iat * 1000), "iat");
@@ -42,7 +42,7 @@ async function userIsAuthenticated(req, res, next) {
     const [
       result,
     ] = await connection.query(
-      "SELECT last_password_update, email FROM users WHERE id=?",
+      "SELECT forced_expiration_date, email FROM users WHERE id=?",
       [id]
     );
 
@@ -52,11 +52,11 @@ async function userIsAuthenticated(req, res, next) {
       throw generateError("There is no user with such id in the database.");
     }
 
-    const lastPasswordUnixTime = new Date(user.last_password_update).getTime();
+    const forcedExpirationUnixTime = new Date(
+      user.forced_expiration_date
+    ).getTime();
 
-    console.log(new Date(user.last_password_update), "update");
-
-    if (new Date(iat * 1000) < new Date(user.last_password_update)) {
+    if (new Date(iat * 1000) < forcedExpirationUnixTime) {
       throw generateError("Expired token. Login to get a new one.");
     }
 
@@ -80,7 +80,47 @@ function userIsAdmin(req, res, next) {
   next();
 }
 
+async function userIsVendor(req, res, next) {
+  if (req.auth.role === "admin") {
+    next();
+  }
+  if (!req.auth || req.auth.role !== "vendor") {
+    return next(generateError("You do not have a shop.", 401));
+  }
+
+  let connection;
+  try {
+    const { id } = req.auth;
+
+    connection = await getConnection();
+
+    const [result] = await connection.query(
+      `
+    SELECT id FROM shops WHERE users_id=?
+    `,
+      [id]
+    );
+
+    const [shopId] = result;
+
+    if (!shopId) {
+      throw generateError(`Shop not found.`, 404);
+    }
+
+    req.auth.shopId = shopId.id;
+
+    next();
+  } catch (error) {
+    next(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
 module.exports = {
   userIsAuthenticated,
   userIsAdmin,
+  userIsVendor,
 };

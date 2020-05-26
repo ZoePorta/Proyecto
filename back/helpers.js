@@ -75,9 +75,13 @@ async function deletePhoto(imagePath) {
 }
 
 //send verification email and get the code
-async function getAndSendVerificationCode(email) {
-  const registrationCode = randomString(40);
-  const validationURL = `${process.env.PUBLIC_HOST}/users/:id/validate?code=${registrationCode}`;
+async function getAndSendVerificationCode(email, change) {
+  const verificationCode = randomString(40);
+  let validationURL = `${process.env.PUBLIC_HOST}/users/validate?code=${verificationCode}`;
+
+  if (change) {
+    validationURL = `${process.env.PUBLIC_HOST}/users/validateEmail?code=${verificationCode}&email=${email}`;
+  }
 
   try {
     await sendEmail({
@@ -85,9 +89,11 @@ async function getAndSendVerificationCode(email) {
       link: validationURL,
     });
   } catch (error) {
-    throw new Error("Error sending the confirmation email. Try again later.");
+    throw generateError(
+      "Error sending the confirmation email. Try again later."
+    );
   }
-  return registrationCode;
+  return verificationCode;
 }
 
 module.exports = {

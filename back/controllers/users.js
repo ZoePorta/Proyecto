@@ -13,9 +13,11 @@ const {
 } = require("../helpers");
 
 const {
+  emailSchema,
   registerUserSchema,
   loginUserSchema,
   editUserSchema,
+  editPasswordUserSchema,
 } = require("./validations");
 
 async function registerUser(req, res, next) {
@@ -41,14 +43,14 @@ async function registerUser(req, res, next) {
     //hash password
     const dbPassword = await bcrypt.hash(password, 10);
 
-    const registrationCode = await getAndSendVerificationCode(email);
+    const verificationCode = await getAndSendVerificationCode(email);
 
     await connection.query(
       `
-INSERT INTO users (email, password, birth_date, registration_code)
+INSERT INTO users (email, password, birth_date, verification_code)
 VALUES (?, ?, ?, ?)
 `,
-      [email, dbPassword, birthDate, registrationCode]
+      [email, dbPassword, birthDate, verificationCode]
     );
 
     res.send({
@@ -77,12 +79,12 @@ async function validateUser(req, res, next) {
     const [
       result,
     ] = await connection.query(
-      "UPDATE users SET active=1, registration_code=NULL WHERE registration_code = ?",
+      "UPDATE users SET active=1, verification_code=NULL WHERE verification_code = ?",
       [code]
     );
 
     if (result.affectedRows === 0) {
-      throw generateError("Wrong confirmation", 400);
+      throw generateError("Wrong verification", 400);
     }
 
     res.send({
@@ -132,7 +134,6 @@ async function loginUser(req, res, next) {
       res.send({
         status: "error",
         message: "User not validated. Please confirm you email before login.",
-        userId: user.id,
         userEmail: email,
       });
     }
@@ -287,8 +288,8 @@ UPDATE users SET first_name=?, last_name=?, photo=? WHERE id=?
 async function resendVerificationEmail(req, res, next) {
   let connection;
   try {
-    const { id, email } = req.body;
-    if (!id || !email) {
+    const { email } = req.body;
+    if (!email) {
       throw generateError("Missing elements.", 400);
     }
 
@@ -297,9 +298,9 @@ async function resendVerificationEmail(req, res, next) {
     //Check if the combination of id and email exists in the database
     const [result] = await connection.query(
       `
-    SELECT active FROM users WHERE id=? AND email=?
+    SELECT active FROM users WHERE email=?
     `,
-      [id, email]
+      [email]
     );
 
     const [user] = result;
@@ -311,14 +312,14 @@ async function resendVerificationEmail(req, res, next) {
       throw generateError("User already active.", 400);
     }
 
-    const registrationCode = await getAndSendVerificationCode(email);
+    const verificationCode = await getAndSendVerificationCode(email);
 
     //Update code on the DB
     await connection.query(
       `
-    UPDATE users SET registration_code=? WHERE id=?
+    UPDATE users SET verification_code=? WHERE email=?
     `,
-      [registrationCode, id]
+      [verificationCode, email]
     );
 
     res.send({
@@ -329,7 +330,175 @@ async function resendVerificationEmail(req, res, next) {
     next(error);
   } finally {
     if (connection) {
-      connection.release;
+      connection.release();
+    }
+  }
+}
+
+//Change password
+async function updatePasswordUser(req, res, next) {
+  let connection;
+  try {
+    const { id } = req.params;
+    connection = await getConnection();
+
+    await editPasswordUserSchema.validateAsync(req.body);
+    const { oldPassword, newPassword } = req.body;
+
+    //Check if the request is made by the corresponding user
+    if (Number(id) !== req.auth.id) {
+      throw generateError(
+        `You do not have permission to edit this user password.`,
+        401
+      );
+    }
+
+    if (oldPassword === newPassword) {
+      throw generateError(
+        "New password can not be the same as old password",
+        400
+      );
+    }
+
+    const [result] = await connection.query(
+      `
+SELECT id, password FROM users WHERE id=?
+`,
+      [id]
+    );
+
+    const [user] = result;
+
+    if (!user) {
+      throw generateError(`User not found.`, 404);
+    }
+
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!passwordMatch) {
+      throw generateError(`Wrong password.`, 401);
+    }
+
+    const dbNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await connection.query(
+      `
+UPDATE users SET password=?, forced_expiration_date=CURRENT_TIMESTAMP WHERE id=?
+`,
+      [dbNewPassword, id]
+    );
+
+    res.send({
+      status: "ok",
+      message: "Password changed successfully. Login to get a new token.",
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
+//Change email
+async function updateEmailUser(req, res, next) {
+  let connection;
+  try {
+    const { id } = req.params;
+    const { email, password } = req.body;
+
+    await emailSchema.validateAsync(email);
+
+    //Check if the request is made by the corresponding user
+    if (Number(id) !== req.auth.id && req.auth.role !== "admin") {
+      throw generateError(
+        `You do not have permission to edit this user email.`,
+        401
+      );
+    }
+
+    connection = await getConnection();
+
+    const [result] = await connection.query(
+      `
+        SELECT id, email, password FROM users WHERE id=?
+        `,
+      [id]
+    );
+
+    const [user] = result;
+
+    if (!user) {
+      throw generateError(`User not found.`, 404);
+    }
+
+    const passwordMatch = bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      throw generateError("Wrong password.", 401);
+    }
+
+    if (user.email === email) {
+      throw generateError(`That is you current email.`, 400);
+    }
+
+    const verificationCode = await getAndSendVerificationCode(email, true);
+
+    await connection.query(
+      `
+UPDATE users SET verification_code=? WHERE id=?
+`,
+      [verificationCode, id]
+    );
+
+    res.send({
+      status: "ok",
+      message:
+        "You have to confirm your new email. Check your email inbox or SPAM folder.",
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
+//Validate new email
+async function validateEmailUser(req, res, next) {
+  let connection;
+  try {
+    const { code, email } = req.query;
+
+    if (!code || !email) {
+      throw generateError(`Missing data.`, 400);
+    }
+
+    connection = await getConnection();
+
+    //Update user
+    const [
+      result,
+    ] = await connection.query(
+      "UPDATE users SET email=?, verification_code=NULL WHERE verification_code = ?",
+      [email, code]
+    );
+
+    if (result.affectedRows === 0) {
+      throw generateError("Wrong confirmation", 400);
+    }
+
+    res.send({
+      status: "ok",
+      message: "Email changed succesfully.",
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    if (connection) {
+      connection.release();
     }
   }
 }
@@ -339,7 +508,9 @@ module.exports = {
   loginUser,
   getInfoUser,
   editUser,
-  /*  updatePasswordUser,*/
+  updatePasswordUser,
+  updateEmailUser,
   validateUser,
+  validateEmailUser,
   resendVerificationEmail,
 };

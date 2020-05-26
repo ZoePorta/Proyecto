@@ -33,13 +33,13 @@ async function main() {
   first_name VARCHAR(50),
   last_name VARCHAR(50),
   password VARCHAR(255),
-  last_password_update DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  forced_expiration_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   birth_date DATE,
   role ENUM('regular', 'vendor', 'admin') DEFAULT 'regular' NOT NULL,
   creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   active BOOLEAN DEFAULT false NOT NULL,
-  registration_code VARCHAR(255)
+ verification_code VARCHAR(255)
   );
   `);
 
