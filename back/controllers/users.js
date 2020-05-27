@@ -503,6 +503,42 @@ async function validateEmailUser(req, res, next) {
   }
 }
 
+//Delete user
+async function deleteUser(req, res, next) {
+  let connection;
+  try {
+    const { id } = req.params;
+    //Check if user has permission
+    if (Number(id) !== req.auth.id && req.auth.role !== "admin") {
+      throw generateError("You have not permission to edit this shop.");
+    }
+
+    connection = await getConnection();
+
+    const [result] = await connection.query(
+      `
+DELETE FROM users WHERE id=?
+`,
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      throw generateError("User not found", 404);
+    }
+
+    res.send({
+      status: "ok",
+      message: `User ${id} deleted. User token no logen working.`,
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -513,4 +549,5 @@ module.exports = {
   validateUser,
   validateEmailUser,
   resendVerificationEmail,
+  deleteUser,
 };

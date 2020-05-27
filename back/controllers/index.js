@@ -43,7 +43,7 @@ async function getProducts(quantity) {
 
     const [results] = await connection.query(
       `
-  SELECT pr.id, name, price, availability, path as imagePath FROM products pr LEFT JOIN photos ph ON pr.id = ph.products_id  WHERE NOT availability='not_available'`
+  SELECT pr.id, name, price, type, available, path as imagePath FROM products pr LEFT JOIN photos ph ON pr.id = ph.products_id  WHERE NOT available=0`
     );
 
     const products = sampleSize(results, quantity);
@@ -73,9 +73,10 @@ async function getIndex(req, res, next) {
     const products = await getProducts(10);
 
     console.log({ status: "ok", message: { promotedShop, products } });
+    res.send({ status: "ok", message: { promotedShop, products } });
   } catch (error) {
     next(error);
   }
 }
 
-getIndex();
+module.exports = { getIndex };

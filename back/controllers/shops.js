@@ -29,7 +29,6 @@ async function createShop(req, res, next) {
       [id]
     );
 
-    console.log(shop.insertId);
     res.send({
       status: "ok",
       message:
@@ -191,7 +190,7 @@ UPDATE users SET role='regular', forced_expiration_date=CURRENT_TIMESTAMP WHERE 
 
     res.send({
       status: "ok",
-      message: `Shop ${shopId} deleted. Login agan to get a new token.`,
+      message: `Shop ${shopId} deleted. Login again to get a new token.`,
     });
   } catch (error) {
     next(error);

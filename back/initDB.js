@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const { getConnection } = require("./db");
-const { formatDateToDB } = require("./helpers");
+const { formatDateToDB, categories, colors } = require("./helpers");
 const bcrypt = require("bcrypt");
 
 const faker = require("faker/locale/es");
@@ -86,7 +86,8 @@ category VARCHAR(50),
 name VARCHAR(100),
 price DECIMAL(7,2),
 stock SMALLINT,
-availability ENUM ('not_available', 'available', 'custom') NOT NULL DEFAULT 'not_available',
+available BOOLEAN DEFAULT false,
+type ENUM ('ready', 'custom') NOT NULL DEFAULT 'ready',
 description TEXT(500),
 color VARCHAR(255),
 creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -199,44 +200,19 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
     //Productos
     const products = 100;
 
-    const categories = [
-      "supplies",
-      "headwear",
-      "clothing",
-      "decor",
-      "jewerly",
-      "accesories",
-      "bags",
-    ];
-    const colors = [
-      "black",
-      "white",
-      "gray",
-      "red",
-      "blue",
-      "green",
-      "yellow",
-      "purple",
-      "orange",
-      "brown",
-      "pink",
-    ];
-
     for (let i = 0; i < products; i++) {
       const stock = sample([0, random(1, 5), random(6, 50), random(51, 500)]);
-      const availability = stock
-        ? sample(["available", "custom"])
-        : "not_available";
+      const available = stock ? 1 : 0;
       await connection.query(`
-      INSERT INTO products(shops_id, category, name, price, stock, availability, description, color)
+      INSERT INTO products(shops_id, category, name, price, stock, available, type, description, color)
       VALUES ('${random(1, shops)}', '${sample(
         categories
       )}', '${faker.lorem.words(random(1, 5))}', '${random(1000, true).toFixed(
         2
-      )}', '${stock}', '${availability}', '${faker.lorem.paragraph()}', '${sampleSize(
-        colors,
-        random(1, 6)
-      )}')
+      )}', '${stock}', '${available}', '${sample([
+        "ready",
+        "custom",
+      ])}', '${faker.lorem.paragraph()}', '${sampleSize(colors, random(1, 6))}')
       `);
     }
 

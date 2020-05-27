@@ -10,6 +10,33 @@ const uuid = require("uuid");
 
 const imageUploadPath = path.join(__dirname, process.env.UPLOADS_DIR);
 
+//Global arrays
+const categories = [
+  "supplies",
+  "headwear",
+  "clothing",
+  "decor",
+  "jewerly",
+  "accesories",
+  "bags",
+  "other",
+];
+const colors = [
+  "black",
+  "white",
+  "gray",
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "purple",
+  "orange",
+  "brown",
+  "pink",
+  "multiple",
+  "other",
+];
+
 //Format a date to DB
 function formatDateToDB(date) {
   return format(date, "yyyy-MM-dd HH:mm:ss");
@@ -104,4 +131,6 @@ module.exports = {
   processAndSavePhoto,
   deletePhoto,
   getAndSendVerificationCode,
+  categories,
+  colors,
 };
