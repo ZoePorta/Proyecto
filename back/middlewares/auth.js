@@ -34,7 +34,7 @@ async function userIsAuthenticated(req, res, next) {
     }
 
     //Check if token expedittion time is valid
-    const { id, iat } = decoded;
+    const { userId, iat } = decoded;
 
     console.log(new Date(iat * 1000), "iat");
     connection = await getConnection();
@@ -43,7 +43,7 @@ async function userIsAuthenticated(req, res, next) {
       result,
     ] = await connection.query(
       "SELECT forced_expiration_date, email FROM users WHERE id=?",
-      [id]
+      [userId]
     );
 
     const [user] = result;
@@ -90,7 +90,7 @@ async function userIsVendor(req, res, next) {
 
   let connection;
   try {
-    const { id } = req.auth;
+    const { userId } = req.auth;
 
     connection = await getConnection();
 
@@ -98,16 +98,16 @@ async function userIsVendor(req, res, next) {
       `
     SELECT id FROM shops WHERE users_id=?
     `,
-      [id]
+      [userId]
     );
 
-    const [shopId] = result;
+    const [shop] = result;
 
-    if (!shopId) {
+    if (!shop) {
       throw generateError(`Shop not found.`, 404);
     }
 
-    req.auth.shopId = shopId.id;
+    req.auth.shopId = shop.id;
 
     next();
   } catch (error) {

@@ -55,21 +55,24 @@ function randomString(size = 20) {
   return crypto.randomBytes(size).toString("hex").slice(0, size);
 }
 
-//Send verification email
-async function sendEmail({ email, title, link }) {
-  sgMail.setApiKey(process.env.SENDGRID_KEY);
+//Send generic email
+async function sendEmail({ email, title, msgHtml }) {
+  try {
+    sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-  const msg = {
-    to: email,
-    from: "zoeportagarcia@gmail.com",
-    subject: "Confirm you email",
-    html: `<div><h1> Please, click <a href='${link}' alt='confirmation link'>here</a> to confirm your email adress.</h1>
-    </div>`,
-  };
+    const msg = {
+      to: email,
+      from: "zoeportagarcia@gmail.com",
+      subject: title,
+      html: msgHtml,
+    };
 
-  console.log("sending email");
+    console.log("sending email");
 
-  await sgMail.send(msg);
+    await sgMail.send(msg);
+  } catch (error) {
+    throw generateError(`Error sending the email.`);
+  }
 }
 
 //Process and save an image and get it's filename
@@ -113,7 +116,9 @@ async function getAndSendVerificationCode(email, change) {
   try {
     await sendEmail({
       email: email,
-      link: validationURL,
+      title: "Confirm your email",
+      msgHtml: `<div><h1> Please, click <a href='${validationURL}' alt='confirmation link'>here</a> to confirm your email adress.</h1>
+    </div>`,
     });
   } catch (error) {
     throw generateError(

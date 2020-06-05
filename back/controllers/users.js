@@ -138,7 +138,7 @@ async function loginUser(req, res, next) {
       });
     }
     //Build jsonwebtoken
-    const tokenPayload = { id: user.id, role: user.role };
+    const tokenPayload = { userId: user.id, role: user.role };
     const token = jwt.sign(tokenPayload, process.env.SECRET, {
       expiresIn: "30d",
     });
@@ -161,7 +161,7 @@ async function loginUser(req, res, next) {
 async function getInfoUser(req, res, next) {
   let connection;
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
     connection = await getConnection();
 
     const [result] = await connection.query(
@@ -169,7 +169,7 @@ async function getInfoUser(req, res, next) {
     select  u.id, u.creation_date, email, role, first_name, last_name, birth_date, photo, s.id AS shop_id, name AS shop_name
     FROM users u LEFT JOIN shops s ON u.id = s.users_id WHERE u.id=?
 `,
-      [id]
+      [userId]
     );
 
     const [userData] = result;
@@ -189,7 +189,7 @@ async function getInfoUser(req, res, next) {
       payload.shopName = userData.shop_name;
     }
 
-    if (userData.id === req.auth.id || req.auth.role === "admin") {
+    if (+userId === req.auth.userId || req.auth.role === "admin") {
       payload.email = userData.email;
       payload.role = userData.role;
       payload.birthDate = userData.birth_date;
@@ -214,7 +214,7 @@ async function editUser(req, res, next) {
   try {
     await editUserSchema.validateAsync(req.body);
 
-    const { id } = req.params;
+    const { userId } = req.params;
     let { firstName, lastName } = req.body;
 
     connection = await getConnection();
@@ -225,17 +225,17 @@ async function editUser(req, res, next) {
       `
 SELECT id, photo, first_name, last_name FROM users WHERE id=?
 `,
-      [id]
+      [userId]
     );
 
     const [user] = current;
 
     if (!user) {
-      throw generateError(`The user with id ${id} does not exist`, 404);
+      throw generateError(`The user with id ${userId} does not exist`, 404);
     }
 
     //Check if user has permission
-    if (user.id !== req.auth.id && req.auth.role !== "admin") {
+    if (+userId !== req.auth.userId && req.auth.role !== "admin") {
       throw generateError("You have not permission to edit this user.");
     }
 
@@ -268,7 +268,7 @@ SELECT id, photo, first_name, last_name FROM users WHERE id=?
       `
 UPDATE users SET first_name=?, last_name=?, photo=? WHERE id=?
 `,
-      [firstName, lastName, savedFileName, id]
+      [firstName, lastName, savedFileName, userId]
     );
 
     res.send({
@@ -295,7 +295,6 @@ async function resendVerificationEmail(req, res, next) {
 
     connection = await getConnection();
 
-    //Check if the combination of id and email exists in the database
     const [result] = await connection.query(
       `
     SELECT active FROM users WHERE email=?
@@ -339,14 +338,14 @@ async function resendVerificationEmail(req, res, next) {
 async function updatePasswordUser(req, res, next) {
   let connection;
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
     connection = await getConnection();
 
     await editPasswordUserSchema.validateAsync(req.body);
     const { oldPassword, newPassword } = req.body;
 
     //Check if the request is made by the corresponding user
-    if (Number(id) !== req.auth.id) {
+    if (Number(userId) !== req.auth.userId) {
       throw generateError(
         `You do not have permission to edit this user password.`,
         401
@@ -364,7 +363,7 @@ async function updatePasswordUser(req, res, next) {
       `
 SELECT id, password FROM users WHERE id=?
 `,
-      [id]
+      [userId]
     );
 
     const [user] = result;
@@ -385,7 +384,7 @@ SELECT id, password FROM users WHERE id=?
       `
 UPDATE users SET password=?, forced_expiration_date=CURRENT_TIMESTAMP WHERE id=?
 `,
-      [dbNewPassword, id]
+      [dbNewPassword, userId]
     );
 
     res.send({
@@ -405,13 +404,13 @@ UPDATE users SET password=?, forced_expiration_date=CURRENT_TIMESTAMP WHERE id=?
 async function updateEmailUser(req, res, next) {
   let connection;
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
     const { email, password } = req.body;
 
     await emailSchema.validateAsync(email);
 
     //Check if the request is made by the corresponding user
-    if (Number(id) !== req.auth.id && req.auth.role !== "admin") {
+    if (Number(userId) !== req.auth.userId && req.auth.role !== "admin") {
       throw generateError(
         `You do not have permission to edit this user email.`,
         401
@@ -424,7 +423,7 @@ async function updateEmailUser(req, res, next) {
       `
         SELECT id, email, password FROM users WHERE id=?
         `,
-      [id]
+      [userId]
     );
 
     const [user] = result;
@@ -449,7 +448,7 @@ async function updateEmailUser(req, res, next) {
       `
 UPDATE users SET verification_code=? WHERE id=?
 `,
-      [verificationCode, id]
+      [verificationCode, userId]
     );
 
     res.send({
@@ -507,10 +506,10 @@ async function validateEmailUser(req, res, next) {
 async function deleteUser(req, res, next) {
   let connection;
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
     //Check if user has permission
-    if (Number(id) !== req.auth.id && req.auth.role !== "admin") {
-      throw generateError("You have not permission to edit this shop.");
+    if (Number(userId) !== req.auth.userId && req.auth.role !== "admin") {
+      throw generateError("You don't have permission to edit this shop.");
     }
 
     connection = await getConnection();
@@ -519,7 +518,7 @@ async function deleteUser(req, res, next) {
       `
 DELETE FROM users WHERE id=?
 `,
-      [id]
+      [userId]
     );
 
     if (result.affectedRows === 0) {
@@ -528,7 +527,7 @@ DELETE FROM users WHERE id=?
 
     res.send({
       status: "ok",
-      message: `User ${id} deleted. User token no logen working.`,
+      message: `User ${userId} deleted. User token no logen working.`,
     });
   } catch (error) {
     next(error);

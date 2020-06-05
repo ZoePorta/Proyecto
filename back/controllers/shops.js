@@ -2,8 +2,56 @@ const { getConnection } = require("../db");
 const { generateError } = require("../helpers");
 const { shopSchema } = require("./validations");
 
+async function getShop(req, res, next) {
+  let connection;
+  try {
+    const { shopId } = req.params;
+    connection = await getConnection();
+
+    const [resultShop] = await connection.query(
+      `
+    SELECT name, video FROM shops WHERE id=? 
+    `,
+      [shopId]
+    );
+
+    const [products] = await connection.query(
+      `
+    SELECT pr.id, name, price, available, category, type, photo, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE shops_id=? group by pr.id
+    `,
+      [shopId]
+    );
+
+    console.log(products);
+
+    if (!resultShop.length) {
+      throw generateError(`Shop not found`, 404);
+    }
+
+    const { name, video } = resultShop[0];
+    const payload = { name, products };
+
+    if (video) {
+      payload.video = video;
+    } else {
+      /////CODIGO PARA SUSTITUIR EL VIDEO POR IMAGENES//////
+    }
+
+    res.send({
+      status: "ok",
+      message: payload,
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
 async function createShop(req, res, next) {
-  const { id, role } = req.auth;
+  const { userId, role } = req.auth;
 
   let connection;
   try {
@@ -14,19 +62,19 @@ async function createShop(req, res, next) {
     connection = await getConnection();
     const { name, description, video, twitter, facebook, instagram } = req.body;
 
-    const [shop] = await connection.query(
+    await connection.query(
       `
   INSERT INTO shops (users_id, name, description, video, twitter, facebook, instagram) 
   VALUES (?, ?, ?, ?, ?, ?, ?) 
   `,
-      [id, name, description, video, twitter, facebook, instagram]
+      [userId, name, description, video, twitter, facebook, instagram]
     );
 
     await connection.query(
       `
   UPDATE users SET role="vendor", forced_expiration_date=CURRENT_TIMESTAMP WHERE id=?
   `,
-      [id]
+      [userId]
     );
 
     res.send({
@@ -148,7 +196,7 @@ async function unpromoteShop(req, res, next) {
   }
 }
 
-//Delete shop
+////DELETE SHOP
 async function deleteShop(req, res, next) {
   let connection;
   try {
@@ -163,14 +211,14 @@ async function deleteShop(req, res, next) {
     //get shop's owner
     const [result] = await connection.query(
       `
-    SELECT users_id FROM shops WHERE id=?
+    SELECT users_id AS userId FROM shops WHERE id=?
     `,
       [shopId]
     );
 
-    const [ownerId] = result;
+    const [owner] = result;
 
-    if (!ownerId) {
+    if (!owner) {
       throw generateError(`Shop not found`, 404);
     }
 
@@ -185,7 +233,7 @@ DELETE FROM shops WHERE id=?
       `
 UPDATE users SET role='regular', forced_expiration_date=CURRENT_TIMESTAMP WHERE id=?
 `,
-      [ownerId]
+      [owner.userId]
     );
 
     res.send({
@@ -202,6 +250,7 @@ UPDATE users SET role='regular', forced_expiration_date=CURRENT_TIMESTAMP WHERE 
 }
 
 module.exports = {
+  getShop,
   createShop,
   editShop,
   promoteShop,

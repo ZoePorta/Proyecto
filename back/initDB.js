@@ -14,14 +14,14 @@ async function main() {
   const connection = await getConnection();
 
   console.log("Dropping tables");
-  await connection.query("DROP TABLE IF EXISTS ratings");
-  await connection.query("DROP TABLE IF EXISTS wishlist");
   await connection.query("DROP TABLE IF EXISTS orders_products");
+  await connection.query("DROP TABLE IF EXISTS wishlists");
+  await connection.query("DROP TABLE IF EXISTS ratings");
   await connection.query("DROP TABLE IF EXISTS orders");
-  await connection.query("DROP TABLE IF EXISTS photos");
+  //await connection.query("DROP TABLE IF EXISTS photos");
   await connection.query("DROP TABLE IF EXISTS products");
   await connection.query("DROP TABLE IF EXISTS shops");
-  await connection.query("DROP TABLE IF EXISTS adresses");
+  await connection.query("DROP TABLE IF EXISTS addresses");
   await connection.query("DROP TABLE IF EXISTS users");
 
   //Create tables
@@ -39,25 +39,26 @@ async function main() {
   creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   active BOOLEAN DEFAULT false NOT NULL,
- verification_code VARCHAR(255)
+  verification_code VARCHAR(255)
   );
   `);
 
   await connection.query(`
-  CREATE TABLE adresses (
+  CREATE TABLE addresses (
 id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 users_id INT UNSIGNED,
+alias VARCHAR(255),
 name VARCHAR(255),
 row1 VARCHAR(255),
 row2 VARCHAR(255),
 city VARCHAR(255),
-PC MEDIUMINT,
+PC BIGINT UNSIGNED,
 country VARCHAR(100),
-prefix VARCHAR(4),
-tlf INT,
+prefix VARCHAR(6),
+phone_number BIGINT UNSIGNED,
 creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-CONSTRAINT FK_adresses_users FOREIGN KEY (users_id) REFERENCES users(id)
+CONSTRAINT FK_addresses_users FOREIGN KEY (users_id) REFERENCES users(id)
 );
   `);
 
@@ -83,6 +84,7 @@ CONSTRAINT FK_shops_users FOREIGN KEY (users_id) REFERENCES users(id)
 id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 shops_id INT UNSIGNED,
 category VARCHAR(50),
+photo VARCHAR(255),
 name VARCHAR(100),
 price DECIMAL(7,2),
 stock SMALLINT,
@@ -96,24 +98,27 @@ CONSTRAINT FK_products_shops FOREIGN KEY (shops_id) REFERENCES shops(id)
 );
   `);
 
-  await connection.query(`
+  //Multiple photos per product not implemented yet
+  /*   await connection.query(`
   CREATE TABLE photos (
 id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 products_id INT UNSIGNED,
 path VARCHAR(255),
 CONSTRAINT FK_photos_products FOREIGN KEY (products_id) REFERENCES products(id)
 );
-  `);
+  `); */
 
   await connection.query(`
   CREATE TABLE orders (
 id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 users_id INT UNSIGNED,
-finished BOOLEAN,
+addresses_id INT UNSIGNED,
+finished BOOLEAN DEFAULT FALSE,
 sell_date DATETIME,
 creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-mod_date DATETIME,
-CONSTRAINT FK_oreders_users foreign key (users_id) REFERENCES users(id)
+mod_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CONSTRAINT FK_oreders_users FOREIGN KEY (users_id) REFERENCES users(id),
+CONSTRAINT FK_oreders_addresses FOREIGN KEY (addresses_id) REFERENCES addresses(id)
 );
   `);
 
@@ -123,14 +128,14 @@ id INT PRIMARY KEY AUTO_INCREMENT,
 orders_id INT UNSIGNED,
 products_id INT UNSIGNED,
 price DECIMAL(7,2),
-quantity SMALLINT,
+quantity SMALLINT DEFAULT 1,
 CONSTRAINT FK_oreders_products_orders FOREIGN KEY (orders_id) REFERENCES orders(id),
 CONSTRAINT FK_orders_products_products FOREIGN KEY (products_id) REFERENCES products(id)
 );
   `);
 
   await connection.query(`
-  CREATE TABLE wishlist (
+  CREATE TABLE wishlists (
 id INT PRIMARY KEY AUTO_INCREMENT,
 users_id INT UNSIGNED,
 products_id INT UNSIGNED,
@@ -178,6 +183,34 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
   `);
     }
 
+    //Addresses
+    const extraAddresses = 10;
+    //Main address per user
+    for (let i = 0; i < users; i++) {
+      await connection.query(`
+      INSERT INTO addresses(users_id, alias, name, row1, row2, city, PC, country, prefix, phone_number)
+      VALUES ('${i + 2}', '${faker.lorem.words(
+        2
+      )}', '${faker.name.findName()}', '${faker.address.streetAddress()}', '${faker.address.secondaryAddress()}', 
+      '${faker.address.city()}', '${faker.address.zipCode()}', '${faker.address.country()}', '+34', '${faker.phone.phoneNumber(
+        "#########"
+      )}')
+      `);
+    }
+
+    //Extra addresses
+    for (let i = 0; i < extraAddresses; i++) {
+      await connection.query(`
+      INSERT INTO addresses(users_id, alias, name, row1, row2, city, PC, country, prefix, phone_number)
+      VALUES ('${random(2, 11)}', '${faker.lorem.words(
+        2
+      )}', '${faker.name.findName()}', '${faker.address.streetAddress()}', '${faker.address.secondaryAddress()}', 
+      '${faker.address.city()}', '${faker.address.zipCode()}', '${faker.address.country()}', '+34', '${faker.phone.phoneNumber(
+        "#########"
+      )}')
+      `);
+    }
+
     //Shops
     const shops = users / 2;
     const randomUserIds = shuffle([...Array(10).keys()]);
@@ -198,7 +231,7 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
     }
 
     //Productos
-    const products = 100;
+    const products = 50;
 
     for (let i = 0; i < products; i++) {
       const stock = sample([0, random(1, 5), random(6, 50), random(51, 500)]);
@@ -214,6 +247,23 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
         "custom",
       ])}', '${faker.lorem.paragraph()}', '${sampleSize(colors, random(1, 6))}')
       `);
+    }
+
+    //Finished orders
+    const finishedOrders = 50;
+
+    for (let i = 0; i < finishedOrders; i++) {
+      const userId = random(2, users + 1);
+      const [userAddresses] = await connection.query(`
+      SELECT id FROM addresses WHERE users_id = '${userId}'
+      `);
+
+      const addressId = sample(userAddresses).id;
+      const sellDate = formatDateToDB(faker.date.past());
+
+      await connection.query(`
+      INSERT INTO orders(users_id, addresses_id, finished, sell_date)
+      VALUES ('${userId}', '${addressId}', '1', '${sellDate}')`);
     }
 
     console.log("Example data added");

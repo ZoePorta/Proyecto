@@ -8,12 +8,12 @@ async function getPromotedShop() {
     connection = await getConnection();
 
     let [result] = await connection.query(`
-    SELECT id shopId, users_id as userId, name, video FROM shops WHERE promoted=1 
+    SELECT id AS shopId, users_id as userId, name, video FROM shops WHERE promoted=1 
     `);
 
     if (!result.length) {
       [result] = await connection.query(`
-    SELECT id shopId, users_id as userId, name, video FROM shops 
+    SELECT id AS shopId, users_id as userId, name, video FROM shops 
     `);
     }
 
@@ -43,13 +43,14 @@ async function getProducts(quantity) {
 
     const [results] = await connection.query(
       `
-  SELECT pr.id, name, price, type, available, path as imagePath FROM products pr LEFT JOIN photos ph ON pr.id = ph.products_id  WHERE NOT available=0`
+    SELECT pr.id, name, price, available, type, photo, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE AVAILABLE=1 group by pr.id
+    `
     );
 
     const products = sampleSize(results, quantity);
 
     const productsArray = [];
-    const a = products.forEach((row) => {
+    products.forEach((row) => {
       const product = {};
       Object.keys(row).forEach((key) => (product[key] = row[key]));
 
@@ -72,7 +73,6 @@ async function getIndex(req, res, next) {
     const promotedShop = await getPromotedShop();
     const products = await getProducts(10);
 
-    console.log({ status: "ok", message: { promotedShop, products } });
     res.send({ status: "ok", message: { promotedShop, products } });
   } catch (error) {
     next(error);

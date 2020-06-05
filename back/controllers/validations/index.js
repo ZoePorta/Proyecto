@@ -44,12 +44,12 @@ const editUserSchema = Joi.object().keys({
   firstName: Joi.string()
     .max(50)
     .error(
-      generateError("This field can not be longer than 50 characters.", 400)
+      generateError("First name can not be longer than 50 characters.", 400)
     ),
   lastName: Joi.string()
     .max(50)
     .error(
-      generateError("This field can not be longer than 50 characters.", 400)
+      generateError("Last name can not be longer than 50 characters.", 400)
     ),
 });
 
@@ -59,18 +59,59 @@ const editPasswordUserSchema = Joi.object().keys({
   newPassword: passwordSchema,
 });
 
+////Address/////
+const addressSchema = Joi.object().keys({
+  alias: Joi.string()
+    .max(255)
+    .required()
+    .error(generateError("Alias can not be longer than 255 characters.", 400)),
+  name: Joi.string()
+    .max(255)
+    .required()
+    .error(generateError("Name can not be longer than 255 characters.", 400)),
+  row1: Joi.string()
+    .max(255)
+    .required()
+    .error(generateError("Row 1 can not be longer than 255 characters.", 400)),
+  row2: Joi.string()
+    .max(255)
+    .error(generateError("Row 2 can not be longer than 255 characters.", 400)),
+  city: Joi.string()
+    .max(255)
+    .required()
+    .error(generateError("City can not be longer than 255 characters.", 400)),
+  postalCode: Joi.number()
+    .integer()
+    .positive()
+    .max(9999999999)
+    .required()
+    .error(generateError(`Please, enter a valid Postal Code.`, 400)),
+  country: Joi.string()
+    .max(100)
+    .required()
+    .error(
+      generateError("Country can not be longer than 100 characters.", 400)
+    ),
+  prefix: Joi.string()
+    .max(5)
+    .error(generateError("Prefix can not be longer than 5 characters.", 400)),
+  phoneNumber: Joi.number()
+    .integer()
+    .positive()
+    .max(9999999999)
+    .error(generateError(`Please, enter a valid phone number.`)),
+});
+
 //////
 //Shop//////////
 const shopSchema = Joi.object().keys({
   name: Joi.string()
     .max(100)
-    .error(
-      generateError("This field can not be longer than 100 characters.", 400)
-    ),
+    .error(generateError("Name can not be longer than 100 characters.", 400)),
   description: Joi.string()
     .max(500)
     .error(
-      generateError("This field can not be longer than 500 characters.", 400)
+      generateError("Description can not be longer than 500 characters.", 400)
     ),
   video: Joi.string().uri().trim(),
   twitter: Joi.string().uri().trim(),
@@ -88,9 +129,7 @@ const productSchema = Joi.object().keys({
   name: Joi.string()
     .max(100)
     .required()
-    .error(
-      generateError("This field can not be longer than 100 characters.", 400)
-    ),
+    .error(generateError("Name can not be longer than 100 characters.", 400)),
   price: Joi.number()
     .positive()
     .precision(2)
@@ -116,15 +155,15 @@ const productSchema = Joi.object().keys({
   available: Joi.binary()
     .max(1)
     .default(0)
-    .error(generateError(`You must select a valid option.`, 400)),
+    .error(generateError(`You must select a valid availability option.`, 400)),
   type: Joi.string()
     .valid("available", "custom")
     .default("ready")
-    .error(generateError(`You must select a valid option.`, 400)),
+    .error(generateError(`You must select a valid type option.`, 400)),
   description: Joi.string()
     .max(500)
     .error(
-      generateError("This field can not be longer than 500 characters.", 400)
+      generateError("Description can not be longer than 500 characters.", 400)
     ),
   color: Joi.array()
     .items(
@@ -134,7 +173,9 @@ const productSchema = Joi.object().keys({
     )
     .unique()
     .required()
-    .error(generateError(`You must select one or more valid options.`, 400)),
+    .error(
+      generateError(`You must select one or more valid color options.`, 400)
+    ),
 });
 
 //Ratings/////////////////////
@@ -152,7 +193,7 @@ const rateSchema = Joi.object().keys({
     ),
 });
 
-//Search//////////////////////
+/* //Search//////////////////////
 const searchSchema = Joi.object().keys({
   category: Joi.string()
     .valid(...categories)
@@ -195,7 +236,7 @@ const searchSchema = Joi.object().keys({
     .precision(1)
     .max(5)
     .error(generateError(`You must vote with up to 5 points.`, 400)),
-});
+}); */
 
 module.exports = {
   emailSchema,
@@ -206,5 +247,6 @@ module.exports = {
   shopSchema,
   productSchema,
   rateSchema,
-  searchSchema,
+  // searchSchema,
+  addressSchema,
 };
