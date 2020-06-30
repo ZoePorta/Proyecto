@@ -19,7 +19,7 @@ async function getProduct(req, res, next) {
     SELECT name, description, price, category, available, type, color, avg(rating) AS avgRating, GROUP_CONCAT(path) AS photos  from products pr LEFT JOIN photos ph ON pr.id = ph.products_id LEFT JOIN ratings r ON pr.id = r.products_id WHERE pr.id=? group by pr.id;
     `, */
       `
-    SELECT name, description, price, category, available, type, color, photo, avg(rating) AS avgRating  from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE pr.id=? group by pr.id;
+    SELECT pr.name, pr.description, price, category, available, type, color, photo, avg(rating) AS avgRating, s.id AS shopId, s.name AS shopName  from products pr LEFT JOIN ratings r ON pr.id = r.products_id LEFT JOIN shops s ON pr.shops_id = s.id WHERE pr.id=? group by pr.id;
     `,
       [productId]
     );
@@ -28,6 +28,8 @@ async function getProduct(req, res, next) {
       throw generateError(`Product not found.`, 404);
     }
 
+    const [product] = result;
+
     const [ratings] = await connection.query(
       `
     SELECT rating, comment FROM ratings WHERE products_id=?
@@ -35,9 +37,22 @@ async function getProduct(req, res, next) {
       [productId]
     );
 
+    //Get related products
+    const { category } = product;
+    console.log(category);
+    const [relatedProducts] = await connection.query(
+      `
+    SELECT pr.id, name, price, available, type, photo, color, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE AVAILABLE=1 AND category=? AND NOT pr.id=? group by pr.id 
+    `,
+      [category, productId]
+    );
+    console.log(relatedProducts);
+
     res.send({
       status: "ok",
-      message: { result, ratings },
+      product,
+      ratings,
+      relatedProducts,
     });
   } catch (error) {
     next(error);
@@ -250,9 +265,12 @@ async function listProducts(req, res, next) {
     connection = await getConnection();
     let [result] = await connection.query(
       `
-    SELECT name, description, price, category, available, type, color, photo, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id group by pr.id;
+    SELECT pr.id, name, description, price, available, category, type, photo, color, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id group by pr.id
     `
     );
+
+    let [categories] = await connection.query(`
+    SELECT DISTINCT category FROM products`);
 
     /*   MOVE TO FRONT
 
@@ -302,7 +320,8 @@ for (const key in req.query) {
     res.send({
       status: "ok",
       results: result.length,
-      message: { results: result.length, result },
+      result,
+      categories,
     });
   } catch (error) {
     next(error);

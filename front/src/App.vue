@@ -30,7 +30,7 @@ li.multiselect__element {
   background: #3454d1;
   min-height: 100vh;
 }
-
+/*
 button.boton {
   height: 2rem;
   width: 5rem;
@@ -40,7 +40,7 @@ button.boton {
   font-weight: bold;
   border-radius: 0.5rem;
   cursor: pointer;
-}
+} */
 
 /* Spinner */
 .lds-ellipsis {

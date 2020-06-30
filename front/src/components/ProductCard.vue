@@ -1,70 +1,81 @@
 <template>
   <div id="list">
-    <p v-show="!products.length">No hay productos que mostrar.</p>
-    <article
+    <div
       class="products"
-      v-for="(product, index) in products"
-      :key="product.id"
-      @click="goToProduct(index)"
+      :style="{ background: !product.available ? '#b1b1b1' : '#efefef' }"
     >
-      <figure>
-        <img :src="product.photo" :alt="product.name" />
-        <div
-          class="availability"
-          :style="{
-            background: !product.available
-              ? red
-              : product.type === 'ready'
-              ? green
-              : orange,
-          }"
-        ></div>
-      </figure>
+      <article @click="goToProduct(product.id)">
+        <figure>
+          <img class="productImg" :src="product.photo" :alt="product.name" />
+          <div
+            class="availability"
+            :style="{
+              background: !product.available
+                ? red
+                : product.type === 'ready'
+                ? green
+                : orange,
+            }"
+          ></div>
+        </figure>
 
-      <!-- Color swatches -->
-      <div
-        v-for="color in product.color.split(',')"
-        :key="color.id"
-        class="colorDiv"
-        :style="{
-          background:
-            color === 'other'
-              ? `white`
-              : color === 'multiple'
-              ? `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
+        <!-- Color swatches -->
+        <div
+          v-for="color in product.color.split(',')"
+          :key="color.id"
+          class="colorDiv"
+          :style="{
+            background:
+              color === 'other'
+                ? `white`
+                : color === 'multiple'
+                ? `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
             linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
             linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`
-              : color,
-        }"
-      >
-        <p
-          :style="{
-            visibility: color === 'other' ? 'visible' : 'hidden',
+                : color,
           }"
         >
-          ?
-        </p>
-      </div>
-      <!-- /Color swatches -->
+          <p
+            :style="{
+              visibility: color === 'other' ? 'visible' : 'hidden',
+            }"
+          >
+            ?
+          </p>
+        </div>
+        <!-- /Color swatches -->
 
-      <h1>{{ product.name }}</h1>
+        <h1>{{ product.name }}</h1>
 
-      <star-rating
-        :rating="+product.avgRating || 0"
-        :increment="0.5"
-        :read-only="true"
-        :star-size="20"
-      ></star-rating>
-      <p class="precio">{{ product.price }}€</p>
-    </article>
+        <star-rating
+          :rating="+product.avgRating || 0"
+          :increment="0.01"
+          :read-only="true"
+          :star-size="20"
+        ></star-rating>
+        <p class="precio">{{ product.price }}€</p>
+      </article>
+
+      <img
+        v-show="showDelete"
+        @click="deleteEvent()"
+        class="delete"
+        src="../assets/deleteicon.svg"
+        alt="delete"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "ClienteCard",
+  name: "ProductCard",
   props: {
-    products: Array,
+    product: Object,
+    showDelete: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -77,14 +88,13 @@ export default {
   },
   methods: {
     //Funcion que emite un evento para comprar un producto
-    buyEvent(index) {
+    deleteEvent() {
       //Enviando el índice del producto a la vista
-      this.$emit("buy", index);
+      this.$emit("delete");
     },
 
     //Función para ir a la página del producto
-    goToProduct(index) {
-      const id = this.products[index].id;
+    goToProduct(id) {
       this.$router.push({ name: "Product", params: { id: id } });
     },
   },
@@ -100,6 +110,14 @@ export default {
   border: 1px solid black;
   margin: 0.2rem;
   border-radius: 0.2rem;
+}
+
+.colorDiv p {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .availability {
@@ -164,11 +182,15 @@ figure {
   color: white;
 }
 
-img {
+img.productImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 5%;
+}
+
+img.delete {
+  width: 1rem;
 }
 
 /* .precio {

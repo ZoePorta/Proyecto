@@ -118,7 +118,7 @@ export default {
     registerUser(email, password) {
       this.validatingData(); //VALIDANDO DATOS DEL FORMULARIO
       if (this.correctData) {
-        var self = this;
+        const self = this;
         axios
           .post(process.env.VUE_APP_API_URL + "/users", {
             email: self.email,

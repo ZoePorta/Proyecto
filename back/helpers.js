@@ -96,21 +96,22 @@ async function processAndSavePhoto(uploadedImage) {
   //Save image
   await finalImage.toFile(path.join(imageUploadPath, savedFileName));
 
-  return savedFileName;
+  return `${process.env.PUBLIC_HOST}/uploads/${savedFileName}`;
 }
 
 //Delete a photo
 async function deletePhoto(imagePath) {
+  const fileName = imagePath.split("/").reverse()[0];
   await fs.unlink(path.join(imageUploadPath, imagePath));
 }
 
 //send verification email and get the code
 async function getAndSendVerificationCode(email, change) {
   const verificationCode = randomString(40);
-  let validationURL = `${process.env.PUBLIC_HOST}/users/validate?code=${verificationCode}`;
+  let validationURL = `${process.env.FRONT_URL}validate?code=${verificationCode}`;
 
   if (change) {
-    validationURL = `${process.env.PUBLIC_HOST}/users/validateEmail?code=${verificationCode}&email=${email}`;
+    validationURL = `${process.env.FRONT_URL}validate?code=${verificationCode}&email=${email}`;
   }
 
   try {

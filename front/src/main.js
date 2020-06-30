@@ -7,6 +7,17 @@ import StarRating from "vue-star-rating";
 
 dotenv.config();
 
+/* Add auth header */
+import axios from "axios";
+
+import { isLoggedIn, getAuthToken } from "./api/utils";
+
+if (isLoggedIn()) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
+}
+
+/* /Add auth header */
+
 Vue.component("vue-headful", vueHeadful);
 Vue.component("star-rating", StarRating);
 

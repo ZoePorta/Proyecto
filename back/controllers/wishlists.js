@@ -10,18 +10,22 @@ async function listWishlist(req, res, next) {
 
     const [result] = await connection.query(
       `
-    SELECT pr.id AS productId, name, price, available, type, photo, avg(rating) AS avgRating from wishlists w LEFT JOIN products pr ON w.products_id = pr.id LEFT JOIN ratings r ON pr.id = r.products_id WHERE w.users_id=? group by pr.id
+    SELECT pr.id AS id, name, price, available, type, photo, color, avg(rating) AS avgRating from wishlists w LEFT JOIN products pr ON w.products_id = pr.id LEFT JOIN ratings r ON pr.id = r.products_id WHERE w.users_id=? group by pr.id
     `,
       [userId]
     );
 
-    if (!result.length) {
-      throw generateError(`Wishlist not found`, 404);
-    }
+    const [user] = await connection.query(
+      `
+    SELECT first_name FROM users WHERE id=?
+    `,
+      [userId]
+    );
 
     res.send({
       status: "ok",
-      message: result,
+      result,
+      user,
     });
   } catch (error) {
     next(error);

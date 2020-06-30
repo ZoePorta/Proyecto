@@ -3,8 +3,8 @@ import jwt from "jwt-decode";
 
 const ENDPOINT = process.env.VUE_APP_API_URL;
 const AUTH_TOKEN_KEY = "authToken";
-const ROLE = "admin";
-const USERNAME = "userName";
+const ROLE = "role";
+const USERID = "userId";
 
 // FUNCION DE LOGIN
 export function loginUser(email, password) {
@@ -19,15 +19,17 @@ export function loginUser(email, password) {
         }, //DATOS DE LA AUTENTICACIÓN
       });
       setAuthToken(res.data.data.token);
-      /* 
-      setIsAdmin(res.data.isAdmin);
 
-      setName(res.data.name);
-*/
-      console.log(jwt(res.data.data.token));
+      const { userId, role } = jwt(res.data.data.token);
+
+      setUserId(userId);
+
+      setRole(role);
+
+      console.log(userId, role);
       resolve();
     } catch (error) {
-      console.log(error.response.status, error.response.data.message);
+      console.log(error.response);
       reject(error);
     }
   });
@@ -43,8 +45,8 @@ export function setAuthToken(token) {
 export function clearLogin() {
   axios.defaults.headers.common["Authorization"] = "";
   localStorage.removeItem(AUTH_TOKEN_KEY);
-  clearAdmin();
-  clearName();
+  clearRole();
+  clearUserId();
 }
 
 //COGER EL TOKEN
@@ -80,48 +82,48 @@ export function isLoggedIn() {
 
 //FUNCIONES PARA COMPROBAR EL ROL DEL USER ===============
 
-//GUARDAR SI ES ADMIN EN LOCAL STORAGE
-export function setIsAdmin(isAdmin) {
-  localStorage.setItem(ROLE, isAdmin);
+//GUARDAR ROL EN LOCAL STORAGE
+export function setRole(role) {
+  localStorage.setItem(ROLE, role);
 }
 
 //BORRAR ROL DEL USER EN LOCAL STORAGE
-export function clearAdmin() {
+export function clearRole() {
   return localStorage.removeItem(ROLE);
 }
 
 //RECUPERAR ROL DESDE EL LOCAL STORAGE
-export function getIsAdmin() {
+export function getRole() {
   return localStorage.getItem(ROLE);
 }
 
 //COMPROBAR ROL
 export function checkAdmin() {
-  let role = false;
-  let isAdmin = getIsAdmin();
+  let role = getRole();
+  let isAdmin = false;
 
-  if (isAdmin === "true") {
-    role = true;
+  if (role === "admin") {
+    isAdmin = true;
   } else {
-    role = false;
+    isAdmin = false;
   }
 
-  return role;
+  return isAdmin;
 }
 
-//FUNCIONES PARA COMPROBAR EL NOMBRE DEL USER ===============
+//FUNCIONES PARA COMPROBAR EL ID DEL USER ===============
 
-//GUARDAR NOMBRE EN LOCAL STORAGE
-export function setName(name) {
-  localStorage.setItem(USERNAME, name);
+//GUARDAR ID EN LOCAL STORAGE
+export function setUserId(id) {
+  localStorage.setItem(USERID, id);
 }
 
-//BORRAR NOMBRE DEL USER EN LOCAL STORAGE
-export function clearName() {
-  return localStorage.removeItem(USERNAME);
+//BORRAR ID DEL USER EN LOCAL STORAGE
+export function clearUserId() {
+  return localStorage.removeItem(USERID);
 }
 
-//RECUPERAR NOMBRE DESDE EL LOCAL STORAGE
-export function getName() {
-  return localStorage.getItem(USERNAME);
+//RECUPERAR ID DESDE EL LOCAL STORAGE
+export function getUserId() {
+  return localStorage.getItem(USERID);
 }

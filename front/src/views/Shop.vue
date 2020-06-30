@@ -26,7 +26,12 @@
     <p>{{ shop.description }}</p>
 
     <!-- Lista de productos -->
-    <productcard :products="shop.products"></productcard>
+    <p v-show="!products.length">No products to show</p>
+    <productcard
+      v-for="product in products"
+      :key="product.id"
+      :product="product"
+    ></productcard>
 
     <!-- /CONTENIDO -->
 
@@ -59,6 +64,7 @@ export default {
 
       //objeto tienda de la bbdd
       shop: {},
+      products: [],
     };
   },
   methods: {
@@ -70,6 +76,7 @@ export default {
         .then(function(response) {
           console.log(response);
           self.shop = response.data.message;
+          self.products = response.data.message.products;
           self.loading = false;
         })
         //si sale mal

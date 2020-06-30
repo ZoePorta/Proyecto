@@ -87,8 +87,8 @@
       <multiselect
         v-model="search.colors"
         placeholder="Color..."
-        label="color"
-        track-by="color"
+        label="name"
+        track-by="name"
         :multiple="true"
         :options="colors"
         :option-height="104"
@@ -120,7 +120,12 @@
     <button @click="resetSearch()">CLEAR</button>
 
     <!-- Lista de productos -->
-    <productcard :products="filterProducts"></productcard>
+    <p v-show="!filterProducts.length">No products to show</p>
+    <productcard
+      v-for="product in filterProducts"
+      :key="product.id"
+      :product="product"
+    ></productcard>
     <!-- /Lista de productos -->
 
     <!-- /CONTENIDO -->
@@ -371,11 +376,16 @@ export default {
   color: black;
   border: 1px solid black;
   margin: 0.2rem;
-  font-size: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   border-radius: 0.5rem;
+}
+
+.option__desc p {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
 }
 </style>

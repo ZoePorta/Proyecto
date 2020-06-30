@@ -60,8 +60,11 @@ export default {
         //INTENTO HACER LOGIN
         await loginUser(this.email, this.password);
         //SI HAY LOGIN, QUE ME LLEVE AL LANDING
+
         this.$router.push("/");
       } catch (error) {
+        console.log(error);
+
         if (error.response.status === 500) {
           Swal.fire({
             icon: "error",

@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 
+const cors = require("cors");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
@@ -66,7 +67,6 @@ const {
 const {
   showCurrentOrder,
   showFinishedOrders,
-  getFinishedOrder,
   addToOrder,
   deleteFromOrder,
   checkoutOrder,
@@ -75,6 +75,9 @@ const {
 
 //Logger middleware
 app.use(morgan("dev"));
+
+//CORS
+app.use(cors());
 
 //Body parser middleware
 app.use(bodyParser.json());
@@ -149,7 +152,6 @@ app.put("/orders/cart/finish", userIsAuthenticated, finishOrder);
 app.post("/orders/cart/:productId", userIsAuthenticated, addToOrder);
 app.delete("/orders/cart/:productId", userIsAuthenticated, deleteFromOrder);
 app.get("/orders", userIsAuthenticated, showFinishedOrders);
-app.get("/orders/:orderId", userIsAuthenticated, getFinishedOrder);
 
 //Error middleware
 app.use((error, req, res, next) => {

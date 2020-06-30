@@ -2,28 +2,39 @@
   <div id="menu">
     <div id="nav">
       <router-link :to="{ name: 'Home' }">Home</router-link> |
-      <router-link :to="{ name: 'Productos' }">Productos</router-link> |
       <router-link :to="{ name: 'About' }">About</router-link>
     </div>
 
-    <div id="user-nav">
-      <p>¡Bienvenido/a, {{ username }}!</p>
-
+    <div id="user-nav" v-if="logged">
+      <router-link :to="{ name: 'Wishlist', params: { userId } }"
+        >Wishlist</router-link
+      >
+      <router-link :to="{ name: 'Orders' }">Orders</router-link>
+      <router-link :to="{ name: 'Profile' }">Profile</router-link>
+      <router-link :to="{ name: 'Cart' }">Cart</router-link>
       <button class="boton" @click="logoutUser()">
         LOGOUT
       </button>
+    </div>
+
+    <div id="user-nav" v-else>
+      <router-link :to="{ name: 'Register' }" tag="button"
+        >REGISTER</router-link
+      >
+      <router-link :to="{ name: 'Login' }" tag="button">LOGIN</router-link>
     </div>
   </div>
 </template>
 
 <script>
-import { clearLogin, getName } from "../api/utils";
+import { clearLogin, getUserId, isLoggedIn } from "../api/utils";
 
 export default {
   name: "MenuCustom",
   data() {
     return {
-      username: getName(),
+      userId: getUserId(),
+      logged: isLoggedIn(),
     };
   },
   methods: {

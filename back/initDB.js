@@ -170,6 +170,15 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
 
   ////Tu add example data use 'initDB --data'
   if (addData) {
+    //Example user => email: user@user.com, password: password
+    const password = await bcrypt.hash("password", 10);
+    const birthDate = formatDateToDB(faker.date.past());
+
+    await connection.query(`
+  INSERT INTO users(email, password, active, first_name, last_name, photo, birth_date)
+  VALUES('user@user.com', '${password}', 1, '${faker.name.firstName()}', '${faker.name.lastName()}', '${faker.internet.avatar()}', '${birthDate}')
+  `);
+
     //Users
     const users = 10;
 
@@ -186,7 +195,7 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
     //Addresses
     const extraAddresses = 10;
     //Main address per user
-    for (let i = 0; i < users; i++) {
+    for (let i = 0; i <= users; i++) {
       await connection.query(`
       INSERT INTO addresses(users_id, alias, name, row1, row2, city, PC, country, prefix, phone_number)
       VALUES ('${i + 2}', '${faker.lorem.words(
@@ -202,7 +211,7 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
     for (let i = 0; i < extraAddresses; i++) {
       await connection.query(`
       INSERT INTO addresses(users_id, alias, name, row1, row2, city, PC, country, prefix, phone_number)
-      VALUES ('${random(2, 11)}', '${faker.lorem.words(
+      VALUES ('${random(2, 12)}', '${faker.lorem.words(
         2
       )}', '${faker.name.findName()}', '${faker.address.streetAddress()}', '${faker.address.secondaryAddress()}', 
       '${faker.address.city()}', '${faker.address.zipCode()}', '${faker.address.country()}', '+34', '${faker.phone.phoneNumber(
@@ -213,17 +222,21 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
 
     //Shops
     const shops = users / 2;
-    const randomUserIds = shuffle([...Array(10).keys()]);
+    const randomUserIds = shuffle([...Array(users).keys()]);
 
     for (let i = 0; i < shops; i++) {
-      const userId = randomUserIds[i] + 2;
+      const userId = randomUserIds[i] + 3;
+      const name = faker.lorem.words(random(1, 3));
+      const rssName = name.replace(/ /g, "");
+      const promoted = Math.random() > 0.75 ? 1 : 0;
 
       await connection.query(`
-      INSERT INTO shops(users_id, name, description)
-      VALUES('${userId}', '${faker.lorem.words(
-        random(1, 3)
-      )}', '${faker.lorem.paragraph()}')
-      `);
+      INSERT INTO shops(users_id, name, description, video, twitter, facebook, instagram, promoted)
+      VALUES('${userId}', '${name}', '${faker.lorem.paragraph()}', '${
+        process.env.PUBLIC_HOST
+      }/uploads/video${i}.mp4',
+      'https://twitter.com/${rssName}', 'https://www.facebook.com/${rssName}', 'https://www.instagram.com/${rssName}', 
+      ${promoted})`);
 
       await connection.query(`
           UPDATE users SET role = 'vendor' WHERE id = ${userId}
@@ -237,7 +250,7 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
       const stock = sample([0, random(1, 5), random(6, 50), random(51, 500)]);
       const available = stock ? 1 : 0;
       await connection.query(`
-      INSERT INTO products(shops_id, category, name, price, stock, available, type, description, color)
+      INSERT INTO products(shops_id, category, name, price, stock, available, type, description, color, photo)
       VALUES ('${random(1, shops)}', '${sample(
         categories
       )}', '${faker.lorem.words(random(1, 5))}', '${random(1000, true).toFixed(
@@ -245,15 +258,33 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
       )}', '${stock}', '${available}', '${sample([
         "ready",
         "custom",
-      ])}', '${faker.lorem.paragraph()}', '${sampleSize(colors, random(1, 6))}')
+      ])}', '${faker.lorem.paragraph()}', '${sampleSize(
+        colors,
+        random(1, 6)
+      )}', '${process.env.PUBLIC_HOST}/uploads/product${i}.jpg')
       `);
+    }
+
+    //Ratings
+    const ratings = 200;
+
+    for (let i = 0; i < ratings; i++) {
+      const userId = random(2, users + 2);
+      const productId = random(1, products);
+
+      await connection.query(`
+      INSERT INTO ratings(users_id, products_id, rating, comment)
+      VALUES ('${userId}', '${productId}', '${random(
+        0,
+        5
+      )}', '${faker.lorem.sentence()}')`);
     }
 
     //Finished orders
     const finishedOrders = 50;
 
     for (let i = 0; i < finishedOrders; i++) {
-      const userId = random(2, users + 1);
+      const userId = random(2, users + 2);
       const [userAddresses] = await connection.query(`
       SELECT id FROM addresses WHERE users_id = '${userId}'
       `);
@@ -264,6 +295,28 @@ CONSTRAINT FK_rating_products FOREIGN KEY (products_id) REFERENCES products(id)
       await connection.query(`
       INSERT INTO orders(users_id, addresses_id, finished, sell_date)
       VALUES ('${userId}', '${addressId}', '1', '${sellDate}')`);
+
+      const productsPerOrder = 3;
+
+      for (let j = 0; j < productsPerOrder; j++) {
+        await connection.query(`
+      INSERT INTO orders_products(orders_id, products_id, price, quantity)
+      VALUES ('${i + 1}', '${random(1, products)}', '${random(
+          1000,
+          true
+        ).toFixed(2)}', '${random(1, 10)}')`);
+      }
+    }
+
+    //Wishlist
+    const listedProducts = 200;
+
+    for (let i = 0; i < listedProducts; i++) {
+      const userId = random(2, users + 2);
+
+      await connection.query(`
+      INSERT INTO wishlists(users_id, products_id)
+      VALUES ('${userId}', '${random(1, products)}')`);
     }
 
     console.log("Example data added");

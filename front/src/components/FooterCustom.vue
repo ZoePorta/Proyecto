@@ -8,18 +8,7 @@
 import { clearLogin, getName } from "../api/utils";
 
 export default {
-  name: "MenuCustom",
-  data() {
-    return {
-      username: getName(),
-    };
-  },
-  methods: {
-    logoutUser() {
-      this.$router.push("/");
-      return clearLogin();
-    },
-  },
+  name: "FooterCustom",
 };
 </script>
 

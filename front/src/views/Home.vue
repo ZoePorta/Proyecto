@@ -41,7 +41,12 @@
 
     <!-- Productos destacados -->
     <h3>Productos destacados</h3>
-    <productcard :products="products" v-on:buy="buyProduct"></productcard>
+    <p v-show="!products.length">No products to show</p>
+    <productcard
+      v-for="product in products"
+      :key="product.id"
+      :product="product"
+    ></productcard>
     <!-- Productos destacados -->
 
     <!-- /CONTENIDO -->
@@ -98,18 +103,6 @@ export default {
 
     goToShop(id) {
       this.$router.push("/shop/" + id);
-    },
-
-    buyProduct(index) {
-      let product = this.products[index];
-
-      Swal.fire({
-        icon: "success",
-        title: "¡Hecho!",
-        text: `Has comprado ${product.nombre} por ${product.precio}€. En breve lo recibirás en tu casa.`,
-      });
-
-      console.log(product);
     },
   },
   created() {

@@ -93,6 +93,47 @@ const routes = [
       allowAnonymous: true,
     },
   },
+  {
+    path: "/wishlist/:userId",
+    name: "Wishlist",
+    component: () => import("../views/Wishlist.vue"),
+    meta: {
+      //Ruta pública
+
+      allowAnonymous: true,
+    },
+  },
+  {
+    path: "/orders",
+    name: "Orders",
+    component: () => import("../views/Orders.vue"),
+    meta: {
+      //Private route
+
+      allowAnonymous: false,
+    },
+  },
+
+  {
+    path: "/profile",
+    name: "Profile",
+    component: () => import("../views/Profile.vue"),
+    meta: {
+      //Private route
+
+      allowAnonymous: false,
+    },
+  },
+  {
+    path: "/cart",
+    name: "Cart",
+    component: () => import("../views/Cart.vue"),
+    meta: {
+      //Private route
+
+      allowAnonymous: false,
+    },
+  },
 ];
 
 const router = new VueRouter({

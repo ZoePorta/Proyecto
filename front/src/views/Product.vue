@@ -48,7 +48,13 @@
 
     <p class="precio">{{ product.price }}€</p>
 
-    <button class="addToCartButton" @click="addToCart()">ADD TO CART</button>
+    <button
+      class="addToCartButton"
+      @click="addToCart()"
+      :disabled="!product.available"
+    >
+      ADD TO CART
+    </button>
     <button class="wishlistButton" @click="addToWishlist()">
       ADD TO WISHLIST
     </button>
@@ -61,7 +67,12 @@
     <!-- /Comentarios -->
 
     <!-- Lista de productos relacionados-->
-    <productcard :products="products"></productcard>
+    <p v-show="!products.length">No products to show</p>
+    <productcard
+      v-for="product in products"
+      :key="product.id"
+      :product="product"
+    ></productcard>
 
     <!-- /CONTENIDO -->
 
@@ -143,11 +154,11 @@ export default {
 
             cancelButtonText: "Seguir comprando",
 
-            confirmButtonText: "Volver al inicio",
+            confirmButtonText: "Shopping cart",
           }).then((result) => {
             //Ir a la página de inicio
             if (result.value) {
-              self.$router.push("/");
+              self.$router.push("/cart");
             }
           });
         })
@@ -169,14 +180,22 @@ export default {
           //Lanzar modal de confirmación
           Swal.fire({
             icon: "success",
-            title: "Producto añadido",
+            title: "Product added to your wishlist",
 
-            confirmButtonText: "¡Vale!",
+            confirmButtonText: "Ok",
           });
         })
-        .catch((error) =>
-          console.log(error.response.status, error.response.data.message)
-        );
+        .catch((error) => {
+          console.log(error.response.status, error.response.data.message);
+          if (error.response.status === 409) {
+            Swal.fire({
+              icon: "error",
+              title: "Product already in your wishlist",
+
+              confirmButtonText: "Ok",
+            });
+          }
+        });
     },
   },
   created() {

@@ -59,7 +59,16 @@ VALUES (?, ?, ?, ?)
         "User registered. Check your email to verify. It may be in the SPAM folder.",
     });
   } catch (error) {
-    next(error);
+    if (error.code === "ER_DUP_ENTRY") {
+      next(
+        generateError(
+          "There is already an account associated to this email.",
+          409
+        )
+      );
+    } else {
+      next(error);
+    }
   } finally {
     if (connection) {
       connection.release();
@@ -131,11 +140,10 @@ async function loginUser(req, res, next) {
     }
 
     if (!user.active) {
-      res.send({
-        status: "error",
-        message: "User not validated. Please confirm you email before login.",
-        userEmail: email,
-      });
+      throw generateError(
+        "User not validated. Please confirm you email before login.",
+        400
+      );
     }
     //Build jsonwebtoken
     const tokenPayload = { userId: user.id, role: user.role };
@@ -180,7 +188,8 @@ async function getInfoUser(req, res, next) {
 
     const payload = {
       registrationDate: userData.creation_date,
-      name: `${userData.first_name} ${userData.last_name}`,
+      first_name: userData.first_name,
+      last_name: userData.last_name,
       photo: userData.photo,
     };
 

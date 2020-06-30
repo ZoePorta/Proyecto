@@ -10,14 +10,14 @@ async function getShop(req, res, next) {
 
     const [resultShop] = await connection.query(
       `
-    SELECT name, video FROM shops WHERE id=? 
+    SELECT name, video, description FROM shops WHERE id=? 
     `,
       [shopId]
     );
 
     const [products] = await connection.query(
       `
-    SELECT pr.id, name, price, available, category, type, photo, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE shops_id=? group by pr.id
+    SELECT pr.id, name, price, available, category, type, photo, color, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE shops_id=? group by pr.id
     `,
       [shopId]
     );
@@ -28,8 +28,8 @@ async function getShop(req, res, next) {
       throw generateError(`Shop not found`, 404);
     }
 
-    const { name, video } = resultShop[0];
-    const payload = { name, products };
+    const { name, video, description } = resultShop[0];
+    const payload = { name, description, products };
 
     if (video) {
       payload.video = video;

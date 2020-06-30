@@ -10,15 +10,11 @@ async function showCurrentOrder(req, res, next) {
 
     const [result] = await connection.query(
       `
-      SELECT name, description, pr.price, category, available, type, color, photo, quantity, stock
+      SELECT pr.id, name, description, pr.price, category, available, type, color, photo, quantity, stock
       FROM orders_products op LEFT JOIN orders o ON op.orders_id=o.id LEFT JOIN products pr ON op.products_id=pr.id WHERE o.users_id=? AND finished=0;
       `,
       [userId]
     );
-
-    if (!result.length) {
-      throw generateError(`Empty cart`, 404);
-    }
 
     res.send({
       status: "ok",
@@ -42,62 +38,34 @@ async function showFinishedOrders(req, res, next) {
 
     const [result] = await connection.query(
       `
-    SELECT sell_date, addresses_id AS address, SUM(op.price) as price FROM orders o LEFT JOIN orders_products op ON o.id = op.orders_id WHERE o.users_id=? AND finished = 1 group by o.id
+    SELECT o.id, sell_date, addresses_id AS address, alias, SUM(op.price) as price FROM orders o 
+    LEFT JOIN orders_products op ON o.id = op.orders_id 
+    LEFT JOIN addresses a ON o.addresses_id = a.id 
+    WHERE o.users_id=? AND finished = 1 group by o.id
     `,
       [userId]
     );
 
-    if (!result.length) {
-      throw generateError(`No orders yet.`, 404);
-    }
-
-    res.send({
-      status: "ok",
-      message: result,
-    });
-  } catch (error) {
-    next(error);
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-}
-
-////GET FINISHED ORDER BY ID
-async function getFinishedOrder(req, res, next) {
-  let connection;
-  try {
-    const { userId, role } = req.auth;
-    const { orderId } = req.params;
-
-    connection = await getConnection();
-
-    const [result] = await connection.query(
-      `
-    SELECT o.users_id, sell_date, pr.id AS productId, pr.name, op.price as price, photo, 
-    quantity, addresses_id, alias from orders o 
-    LEFT JOIN orders_products op ON o.id = op.orders_id 
+    for (const order of result) {
+      const [products] = await connection.query(
+        `
+    SELECT  pr.id AS productId, pr.name, op.price as price, photo, 
+    quantity, rating from  orders_products op 
     LEFT JOIN  products pr ON op.products_id = pr.id 
-    LEFT JOIN addresses a ON o.addresses_id = a.id WHERE o.id=?
+    LEFT JOIN orders o ON op.orders_id = o.id
+    LEFT JOIN ratings r ON op.products_id = r.products_id AND o.users_id = r.users_id
+     WHERE orders_id=?;
    
     `,
-      [orderId]
-    );
+        [order.id]
+      );
 
-    const [order] = result;
-
-    if (!order) {
-      throw generateError(`Order not found.`, 404);
-    }
-
-    if (userId !== order.users_id && role !== "admin") {
-      throw generateError(`You have not permission to see this order.`, 401);
+      order.products = products;
     }
 
     res.send({
       status: "ok",
-      message: result,
+      result,
     });
   } catch (error) {
     next(error);
@@ -417,7 +385,6 @@ async function finishOrder(req, res, next) {
 module.exports = {
   showCurrentOrder,
   showFinishedOrders,
-  getFinishedOrder,
   addToOrder,
   deleteFromOrder,
   checkoutOrder,
