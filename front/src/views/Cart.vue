@@ -1,14 +1,14 @@
 <template>
   <div class="cart">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
+    <!-- CHANGE PAGE HEADER -->
     <vue-headful title="Shopping cart" description="Your shopping cart." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -19,20 +19,61 @@
     </div>
     <!-- /Spinner -->
 
-    <!-- Lista de productos -->
-    <p v-show="!products.length && !loading">No products to show</p>
-    <productcard
-      v-for="(product, index) in products"
-      :key="product.id"
-      :product="product"
-      :showDelete="true"
-      v-on:delete="deleteProduct(index)"
+    <!-- Product list -->
+    <div class="productsList">
+      <p v-show="!products.length && !loading">No products to show</p>
+      <productcard
+        v-for="(product, index) in products"
+        :key="product.id"
+        :product="product"
+        :showDelete="true"
+        v-on:delete="deleteProduct(index)"
+      >
+      </productcard>
+    </div>
+    <!-- /Product list -->
+
+    <!-- Addresses -->
+
+    <table class="adresses">
+      <thead>
+        <tr>
+          <th>
+            Select address...
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="address in addresses"
+          :key="address.id"
+          :class="{ selected: address.id === addressId }"
+          @click="addressId = address.id"
+        >
+          <td>{{ address.alias }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- /Addresses -->
+
+    <!-- Checkout button -->
+    <router-link
+      :to="{ name: 'Checkout', params: { addressId } }"
+      tag="button"
+      :disabled="!checkAvailability"
+      >CHECKOUT</router-link
     >
-    </productcard>
+    <!-- /Checkout button -->
 
-    <!-- /Lista de productos -->
+    <!-- Error message -->
+    <p v-show="!checkAvailability">
+      Some products are not available right now, please remove them from your
+      order.
+    </p>
+    <!-- /Error message -->
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -42,12 +83,12 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 import productcard from "@/components/ProductCard.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -66,6 +107,12 @@ export default {
 
       //Products array
       products: [],
+
+      //Addresses Aray
+      addresses: [],
+
+      //Selected address
+      addressId: "",
     };
   },
   methods: {
@@ -73,14 +120,15 @@ export default {
       var self = this;
       axios
         .get(process.env.VUE_APP_API_URL + "/orders/cart")
-        //si sale bien
+        //Success
         .then(function(response) {
-          console.log(response);
-          self.products = response.data.message;
+          self.products = response.data.result;
+          self.addresses = response.data.addresses;
+          self.addressId = self.addresses[0].id;
 
           self.loading = false;
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
 
@@ -88,9 +136,8 @@ export default {
       const productId = this.products[index].id;
       axios
         .delete(process.env.VUE_APP_API_URL + "/orders/cart/" + productId)
-        //si sale bien
+        //Success: confirmtion model
         .then(function(response) {
-          console.log(response);
           Swal.fire({
             icon: "success",
             title: "Product removed",
@@ -100,19 +147,37 @@ export default {
             location.reload();
           });
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
   },
   created() {
     this.getProducts();
   },
-  watch: {
-    $route() {
-      this.$router.go();
+
+  computed: {
+    checkAvailability() {
+      let available = true;
+      for (const product of this.products) {
+        available = available && product.available;
+      }
+
+      return available;
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+thead {
+  cursor: default;
+}
+
+tbody {
+  cursor: pointer;
+}
+tr.selected {
+  background: rgb(97, 97, 97);
+  font-weight: bold;
+}
+</style>

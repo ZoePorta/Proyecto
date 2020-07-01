@@ -6,17 +6,17 @@ const AUTH_TOKEN_KEY = "authToken";
 const ROLE = "role";
 const USERID = "userId";
 
-// FUNCION DE LOGIN
+// LOGIN FUNCTION
 export function loginUser(email, password) {
   return new Promise(async (resolve, reject) => {
     try {
       let res = await axios({
-        url: `${ENDPOINT}/users/login`, //URL DE LA AUTENTICACIÓN
-        method: "POST", //MÉTODO DE LA AUTENTICACIÓN
+        url: `${ENDPOINT}/users/login`, //AUTH URL
+        method: "POST", //AUTH METHOD
         data: {
-          email: email, //USUARIO
-          password: password, //CONTRASEÑA
-        }, //DATOS DE LA AUTENTICACIÓN
+          email: email, //USER
+          password: password, //PASSWORD
+        }, //AUTH DATA
       });
       setAuthToken(res.data.data.token);
 
@@ -26,16 +26,14 @@ export function loginUser(email, password) {
 
       setRole(role);
 
-      console.log(userId, role);
       resolve();
     } catch (error) {
-      console.log(error.response);
       reject(error);
     }
   });
 }
 
-//GUARDAR TOKEN EN LOCALSTORAGE
+//SAVE TOKEN TO LOCALSTORAGE
 export function setAuthToken(token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   localStorage.setItem(AUTH_TOKEN_KEY, token);
@@ -49,12 +47,12 @@ export function clearLogin() {
   clearUserId();
 }
 
-//COGER EL TOKEN
+//GET TOKEN
 export function getAuthToken() {
   return localStorage.getItem(AUTH_TOKEN_KEY);
 }
 
-//CONSIGUIENDO FECHA DE EXPIRACIÓN DEL TOKEN
+//GET TOKEN EXPIRATION TIME
 export function getTokenExpirationDate(encodedToken) {
   let token = jwt(encodedToken);
   //si no hay, no sigue
@@ -67,37 +65,37 @@ export function getTokenExpirationDate(encodedToken) {
   return date;
 }
 
-//COMPROBANDO SI LA FECHA SIGUE VIGENTE O NO
+//CHEK IF TOKEN IS EXPIRED
 export function isTokenExpired(token) {
   let expirationDate = getTokenExpirationDate(token);
   return expirationDate < new Date();
 }
 
-//COMPROBAR SI EL USUARIO ESTÁ LOGUEADO O NO
+//CHECK IF USER IS LOGGED
 export function isLoggedIn() {
   let authToken = getAuthToken();
 
   return !!authToken && !isTokenExpired(authToken);
 }
 
-//FUNCIONES PARA COMPROBAR EL ROL DEL USER ===============
+////// FUNCTIONS TO GET USER ROLE
 
-//GUARDAR ROL EN LOCAL STORAGE
+//SAVE ROLE TO LOCAL STORAGE
 export function setRole(role) {
   localStorage.setItem(ROLE, role);
 }
 
-//BORRAR ROL DEL USER EN LOCAL STORAGE
+//REMOVE ROLE FROM LOCAL STORAGE
 export function clearRole() {
   return localStorage.removeItem(ROLE);
 }
 
-//RECUPERAR ROL DESDE EL LOCAL STORAGE
+//GET ROLE FROM LOCAL STORAGE
 export function getRole() {
   return localStorage.getItem(ROLE);
 }
 
-//COMPROBAR ROL
+//CHECK ROLE
 export function checkAdmin() {
   let role = getRole();
   let isAdmin = false;
@@ -111,19 +109,19 @@ export function checkAdmin() {
   return isAdmin;
 }
 
-//FUNCIONES PARA COMPROBAR EL ID DEL USER ===============
+////// FUNCTIONS TO CHECK USER ID
 
-//GUARDAR ID EN LOCAL STORAGE
+//SAVE ID TO LOCAL STORAGE
 export function setUserId(id) {
   localStorage.setItem(USERID, id);
 }
 
-//BORRAR ID DEL USER EN LOCAL STORAGE
+//DELETE ID FROM LOCAL STORAGE
 export function clearUserId() {
   return localStorage.removeItem(USERID);
 }
 
-//RECUPERAR ID DESDE EL LOCAL STORAGE
+//GET ID FROM LOCAL STORAGE
 export function getUserId() {
   return localStorage.getItem(USERID);
 }

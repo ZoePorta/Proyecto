@@ -39,14 +39,12 @@ async function getProduct(req, res, next) {
 
     //Get related products
     const { category } = product;
-    console.log(category);
     const [relatedProducts] = await connection.query(
       `
     SELECT pr.id, name, price, available, type, photo, color, avg(rating) AS avgRating from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE AVAILABLE=1 AND category=? AND NOT pr.id=? group by pr.id 
     `,
       [category, productId]
     );
-    console.log(relatedProducts);
 
     res.send({
       status: "ok",
@@ -272,51 +270,6 @@ async function listProducts(req, res, next) {
     let [categories] = await connection.query(`
     SELECT DISTINCT category FROM products`);
 
-    /*   MOVE TO FRONT
-
-for (const key in req.query) {
-      switch (key) {
-        case "category":
-        case "type":
-          result = result.filter((product) => product[key] === req.query[key]);
-          console.log(key);
-
-          break;
-        case "priceMax":
-          result = result.filter(
-            (product) => Number(product.price) <= req.query[key]
-          );
-          break;
-        case "priceMin":
-          result = result.filter(
-            (product) => Number(product.price) >= req.query[key]
-          );
-          break;
-        case "words":
-          result = result.filter(
-            (product) =>
-              product.name.toLowerCase().includes(req.query[key].toLowerCase) ||
-              product.description
-                .toLowerCase()
-                .includes(req.query[key].toLowerCase())
-          );
-          break;
-        case "color":
-          const searchColorArray = req.query[key].split(" ");
-          const comparer = (boolean, color) =>
-            searchColorArray.includes(color) || boolean;
-          result = result.filter((product) => {
-            const productColorArray = product.color.split(",");
-            return productColorArray.reduce(comparer, false);
-          });
-          break;
-        case "avgRating":
-          result = result.filter(
-            (product) => Number(product.avgRating) >= req.query[key]
-          );
-      }
-    }
- */
     res.send({
       status: "ok",
       results: result.length,

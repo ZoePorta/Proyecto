@@ -51,7 +51,6 @@ function generateError(message, code) {
 
 //Generate random string
 function randomString(size = 20) {
-  console.log(size);
   return crypto.randomBytes(size).toString("hex").slice(0, size);
 }
 
@@ -62,7 +61,7 @@ async function sendEmail({ email, title, msgHtml }) {
 
     const msg = {
       to: email,
-      from: "zoeportagarcia@gmail.com",
+      from: process.env.SENDGRID_EMAIL,
       subject: title,
       html: msgHtml,
     };

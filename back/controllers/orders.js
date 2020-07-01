@@ -16,9 +16,17 @@ async function showCurrentOrder(req, res, next) {
       [userId]
     );
 
+    const [addresses] = await connection.query(
+      `
+      SELECT id, alias FROM addresses WHERE users_id=?;
+      `,
+      [userId]
+    );
+
     res.send({
       status: "ok",
-      message: result,
+      result,
+      addresses,
     });
   } catch (error) {
     next(error);
@@ -41,7 +49,8 @@ async function showFinishedOrders(req, res, next) {
     SELECT o.id, sell_date, addresses_id AS address, alias, SUM(op.price) as price FROM orders o 
     LEFT JOIN orders_products op ON o.id = op.orders_id 
     LEFT JOIN addresses a ON o.addresses_id = a.id 
-    WHERE o.users_id=? AND finished = 1 group by o.id
+    WHERE o.users_id=? AND finished = 1 group by o.id 
+    ORDER BY o.mod_date DESC
     `,
       [userId]
     );
@@ -223,17 +232,19 @@ async function deleteFromOrder(req, res, next) {
 
 //CHECKOUT
 async function checkoutOrder(req, res, next) {
-  console.log("entra");
   let connection;
   try {
     const { userId } = req.auth;
-    const { addresId } = req.body;
+    const { addressId } = req.body;
 
     connection = await getConnection();
 
+    //Get current user's order
     const [order] = await connection.query(
       `
-    SELECT pr.id AS productId, quantity, stock, available, pr.price AS price FROM orders o LEFT JOIN orders_products op ON o.id=op.orders_id LEFT JOIN products pr ON op.products_id=pr.id WHERE o.users_id=? AND finished=0;
+    SELECT pr.id AS productId, quantity, stock, available, pr.price AS price FROM orders o 
+    LEFT JOIN orders_products op ON o.id=op.orders_id 
+    LEFT JOIN products pr ON op.products_id=pr.id WHERE o.users_id=? AND finished=0;
     `,
       [userId]
     );
@@ -261,12 +272,20 @@ async function checkoutOrder(req, res, next) {
       }
     }
 
-    //Set order adress
+    //Get address info
+    const [address] = await connection.query(
+      `
+    SELECT alias, name, row1, row2, city, country, PC, prefix, phone_number FROM addresses WHERE id=? 
+    `,
+      [addressId]
+    );
+
+    //Set order address
     await connection.query(
       `
     UPDATE orders SET addresses_id=? WHERE users_id=? AND finished=0
     `,
-      [addresId, userId]
+      [addressId, userId]
     );
 
     const totalPrice = order.reduce(
@@ -275,10 +294,10 @@ async function checkoutOrder(req, res, next) {
       0
     );
 
-    ///// LLAMAR A PASARELA DE PAGO
     res.send({
       status: "ok",
-      message: `Precio total: ${totalPrice}`,
+      total: totalPrice,
+      address: address[0],
     });
   } catch (error) {
     next(error);
@@ -334,7 +353,7 @@ async function finishOrder(req, res, next) {
       );
 
       //Send email to vendor
-      const message = `Congratulations! You have just sold ${quantity} x <a href="${process.env.PUBLIC_HOST}/products/${productId}">${productName}</a>`;
+      const message = `Congratulations! You have just sold ${quantity} x <a href="${process.env.FRONT_URL}/product/${productId}">${productName}</a>`;
 
       await sendEmail({
         email: vendorEmail,

@@ -1,14 +1,14 @@
 <template>
   <div class="orders">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Orders" description="Orders page." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Orders" description="Your finished orders." />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
 
     <h2>Finished orders</h2>
 
@@ -22,7 +22,7 @@
     <!-- /Spinner -->
 
     <!-- Order list -->
-    <p v-show="!orders">No orders to show</p>
+    <p v-show="!orders && !loading">No orders to show</p>
 
     <table v-for="order in orders" :key="order.id">
       <thead>
@@ -46,7 +46,7 @@
     </table>
     <!-- /Order list -->
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -56,16 +56,14 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 import ordercard from "@/components/OrderCard.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
-
-import { getUserId } from "../api/utils";
 
 export default {
   name: "Orders",
@@ -83,28 +81,27 @@ export default {
     };
   },
   methods: {
-    getProducts() {
+    getOrders() {
       var self = this;
       axios
         .get(process.env.VUE_APP_API_URL + "/orders")
-        //si sale bien
+        //Success
         .then(function(response) {
-          console.log(response);
           self.orders = response.data.result;
 
           self.loading = false;
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
 
+    //Function to remove item from order
     deleteProduct(index) {
       const productId = this.products[index].id;
       axios
         .delete(process.env.VUE_APP_API_URL + "/wishlist/" + productId)
-        //si sale bien
+        //Success: confirmation modal
         .then(function(response) {
-          console.log(response);
           Swal.fire({
             icon: "success",
             title: "Product removed",
@@ -114,23 +111,20 @@ export default {
             location.reload();
           });
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
   },
   created() {
-    this.getProducts();
-  },
-  watch: {
-    $route() {
-      this.$router.go();
-    },
+    this.getOrders();
   },
 };
 </script>
 
 <style scoped>
-img {
-  width: 10rem;
+table {
+  width: 90%;
+  margin: 1rem auto;
+  background: grey;
 }
 </style>

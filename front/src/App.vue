@@ -30,17 +30,20 @@ li.multiselect__element {
   background: #3454d1;
   min-height: 100vh;
 }
-/*
-button.boton {
-  height: 2rem;
-  width: 5rem;
-  grid-area: comprar;
-  background: #3454d1;
-  color: #efefef;
-  font-weight: bold;
-  border-radius: 0.5rem;
-  cursor: pointer;
-} */
+
+.productsList {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.ratingStars {
+  display: flex;
+  justify-content: center;
+}
 
 /* Spinner */
 .lds-ellipsis {

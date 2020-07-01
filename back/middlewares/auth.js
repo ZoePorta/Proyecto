@@ -36,7 +36,6 @@ async function userIsAuthenticated(req, res, next) {
     //Check if token expedittion time is valid
     const { userId, iat } = decoded;
 
-    console.log(new Date(iat * 1000), "iat");
     connection = await getConnection();
 
     const [

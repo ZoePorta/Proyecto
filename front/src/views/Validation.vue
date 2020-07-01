@@ -1,12 +1,12 @@
 <template>
   <div class="search">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
+    <!-- CHANGE PAGE HEADER -->
     <vue-headful title="Validation" description="Validate your account." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- /CHANGE PAGE HEADER -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -16,10 +16,10 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import footercustom from "@/components/FooterCustom.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -34,16 +34,16 @@ export default {
     };
   },
   methods: {
+    //Validate account function
     validate() {
       var self = this;
       const { code } = self.$route.query;
       let url = "/users/validate?code=" + code;
       axios
         .get(process.env.VUE_APP_API_URL + url)
-        //si sale bien
+        //success
         .then(function(response) {
-          console.log(response);
-          //Confirmation pop-up
+          //Confirmation modal
           Swal.fire({
             icon: "success",
             title: "Account verified",
@@ -54,7 +54,7 @@ export default {
             (result) => self.$router.push("/login")
           );
         })
-        //si sale mal
+        //error: error modal
         .catch((error) => {
           console.log(error);
           Swal.fire({

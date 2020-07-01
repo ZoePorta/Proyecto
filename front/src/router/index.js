@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import { isLoggedIn, checkAdmin } from "../api/utils";
-import Swal from "sweetalert2";
+import { isLoggedIn } from "../api/utils";
 
 Vue.use(VueRouter);
 
@@ -11,45 +10,9 @@ const routes = [
     name: "Home",
     component: () => import("../views/Home.vue"),
     meta: {
-      //Ruta pública
+      //Public route
 
       allowAnonymous: true,
-    },
-  },
-  {
-    path: "/shop/:id",
-    name: "Shop",
-    component: () => import("../views/Shop.vue"),
-    meta: {
-      //Ruta privada
-      allowAnonymous: false,
-    },
-  },
-  {
-    path: "/product/:id",
-    name: "Product",
-    component: () => import("../views/Product.vue"),
-    meta: {
-      //Ruta publica
-      allowAnonymous: true,
-    },
-  },
-  {
-    path: "/search",
-    name: "Search",
-    component: () => import("../views/Search.vue"),
-    meta: {
-      //Ruta publica
-      allowAnonymous: true,
-    },
-  },
-  {
-    path: "/about",
-    name: "About",
-    component: () => import("../views/About.vue"),
-    meta: {
-      //Ruta privada
-      allowAnonymous: false,
     },
   },
 
@@ -58,51 +21,75 @@ const routes = [
     name: "Login",
     component: () => import("../views/Login.vue"),
     meta: {
-      //Ruta pública
+      //Public route
 
       allowAnonymous: true,
     },
   },
+
   {
     path: "/register",
     name: "Register",
     component: () => import("../views/Register.vue"),
     meta: {
-      //Ruta pública
+      //Public route
 
       allowAnonymous: true,
     },
   },
+
   {
     path: "/validate",
     name: "Validation",
     component: () => import("../views/Validation.vue"),
     meta: {
-      //Ruta pública
+      //Public route
 
       allowAnonymous: true,
     },
   },
+
   {
-    path: "*",
-    name: "Error404",
-    component: () => import("../views/Error404.vue"),
+    path: "/search",
+    name: "Search",
+    component: () => import("../views/Search.vue"),
     meta: {
-      //Ruta pública
-
+      //Public route
       allowAnonymous: true,
     },
   },
+
+  {
+    path: "/product/:id",
+    name: "Product",
+    component: () => import("../views/Product.vue"),
+    meta: {
+      //Public route
+      allowAnonymous: true,
+    },
+  },
+
+  {
+    path: "/shop/:id",
+    name: "Shop",
+    component: () => import("../views/Shop.vue"),
+    meta: {
+      //Public route
+      allowAnonymous: true,
+    },
+  },
+
   {
     path: "/wishlist/:userId",
     name: "Wishlist",
     component: () => import("../views/Wishlist.vue"),
     meta: {
-      //Ruta pública
+      //Public route
 
       allowAnonymous: true,
     },
   },
+
   {
     path: "/orders",
     name: "Orders",
@@ -124,6 +111,7 @@ const routes = [
       allowAnonymous: false,
     },
   },
+
   {
     path: "/cart",
     name: "Cart",
@@ -134,18 +122,41 @@ const routes = [
       allowAnonymous: false,
     },
   },
+
+  {
+    path: "/checkout/:addressId",
+    name: "Checkout",
+    component: () => import("../views/Checkout.vue"),
+    meta: {
+      //Private route
+
+      allowAnonymous: false,
+    },
+  },
+
+  {
+    path: "*",
+    name: "Error404",
+    component: () => import("../views/Error404.vue"),
+    meta: {
+      //Public route
+
+      allowAnonymous: true,
+    },
+  },
 ];
 
 const router = new VueRouter({
   routes,
 });
 
-//COMPROBANDO CADA PÁGINA POR SI LA PERSONA ESTA LOGUEADA
+//CHECK EACH PAGE IF THE PERSON IS LOGGED
 router.beforeEach((to, from, next) => {
-  // Si la ruta es privada y la persona no tiene token
+  // If the route is private and user has no token
   if (!to.meta.allowAnonymous && !isLoggedIn()) {
     next({
-      path: "/",
+      //Send user lo login
+      path: "/login",
       query: { redirect: to.fullPath },
     });
   } else {

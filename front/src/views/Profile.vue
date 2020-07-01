@@ -1,14 +1,14 @@
 <template>
   <div class="Profile">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Profile" description="Profile." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Profile" description="Update your profile." />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -19,7 +19,7 @@
     </div>
     <!-- /Spinner -->
 
-    <form>
+    <form class="profile">
       <img :src="user.photo" alt="Profile picture" />
 
       <label for="first_name">First name:</label>
@@ -33,10 +33,10 @@
 
       <label for="birthDate">Birth date:</label>
       <input type="text" id="birthDate" v-model="formattedDate" disabled />
+      <button @click.prevent="saveChanges()">Save</button>
     </form>
-    <button @click="saveChanges()">Save</button>
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -46,11 +46,11 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -68,9 +68,12 @@ export default {
 
       //Profile object
       user: {},
+
+      //Correctly formatted date
       formattedDate: "",
     };
   },
+
   methods: {
     getInfo() {
       const self = this;
@@ -78,7 +81,6 @@ export default {
         .get(process.env.VUE_APP_API_URL + "/users/" + getUserId())
         //Success
         .then(function(response) {
-          console.log(response);
           self.user = response.data.data;
           self.formattedDate = self.formatDate(self.user.birthDate);
 
@@ -92,6 +94,7 @@ export default {
       return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     },
 
+    //Update user info function
     saveChanges() {
       const self = this;
 
@@ -100,10 +103,8 @@ export default {
           firstName: self.user.first_name,
           lastName: self.user.last_name,
         })
-        //Success
+        //Success: confirmation modal
         .then(function(response) {
-          console.log(response);
-
           Swal.fire({
             icon: "success",
             title: "Profile updated",
@@ -119,13 +120,25 @@ export default {
   },
   created() {
     this.getInfo();
-    console.log(this.user);
   },
 };
 </script>
 
 <style scoped>
-h2 {
-  margin-bottom: 1rem;
+.profile {
+  background: cornsilk;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: blue;
+  padding: 1rem;
+  width: 50%;
+  margin: auto;
+  border-radius: 1rem;
+}
+img {
+  width: 10rem;
+  border-radius: 50%;
 }
 </style>

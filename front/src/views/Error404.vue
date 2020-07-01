@@ -1,17 +1,17 @@
 <template>
   <div class="error">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Error 404" description="Página no encontrada." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Error 404" description="Page not found." />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
-    <h1>¿Te has perdido 🙀?</h1>
-    <p>Esta página no existe, son los padres.</p>
-    <!-- /CONTENIDO -->
+    <!-- CONTENT -->
+    <h1>Are you lost 🙀?</h1>
+    <p>There's nothing here.</p>
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -21,11 +21,11 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 
 export default {

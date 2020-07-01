@@ -1,17 +1,16 @@
 <template>
   <div id="menu">
-    <div id="nav">
-      <router-link :to="{ name: 'Home' }">Home</router-link> |
-      <router-link :to="{ name: 'About' }">About</router-link>
+    <div id="home">
+      <router-link :to="{ name: 'Home' }">Crafty</router-link>
     </div>
 
     <div id="user-nav" v-if="logged">
-      <router-link :to="{ name: 'Wishlist', params: { userId } }"
+      <router-link :to="{ name: 'Wishlist', params: { userId } }" tag="button"
         >Wishlist</router-link
       >
-      <router-link :to="{ name: 'Orders' }">Orders</router-link>
-      <router-link :to="{ name: 'Profile' }">Profile</router-link>
-      <router-link :to="{ name: 'Cart' }">Cart</router-link>
+      <router-link :to="{ name: 'Orders' }" tag="button">Orders</router-link>
+      <router-link :to="{ name: 'Profile' }" tag="button">Profile</router-link>
+      <router-link :to="{ name: 'Cart' }" tag="button">Cart</router-link>
       <button class="boton" @click="logoutUser()">
         LOGOUT
       </button>
@@ -39,7 +38,9 @@ export default {
   },
   methods: {
     logoutUser() {
-      this.$router.push("/login");
+      this.$router.push("/").catch((error) => {
+        location.reload();
+      });
       return clearLogin();
     },
   },
@@ -54,27 +55,17 @@ export default {
   color: #070707;
 }
 
-div {
-  display: inline-block;
-}
-
-p {
-  display: inline;
-  margin-right: 1rem;
-}
-
-#nav {
+#home {
   padding: 30px;
-  width: 100%;
   padding-top: 4rem;
 }
 
-#nav a {
+#home a {
   font-weight: bold;
   color: #3454d1;
 }
 
-#nav a.router-link-exact-active {
+#home a.router-link-exact-active {
   color: #34d1bf;
 }
 
@@ -82,5 +73,11 @@ p {
   position: absolute;
   right: 1rem;
   top: 1rem;
+}
+
+#user-nav button {
+  margin: 0 0.2rem;
+  padding: 0.1rem;
+  cursor: pointer;
 }
 </style>

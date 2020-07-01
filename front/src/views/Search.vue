@@ -1,14 +1,14 @@
 <template>
   <div class="search">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Búsqueda" description="Información de la tienda." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Explore" description="Explore our catalogue." />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -56,32 +56,36 @@
       <label for="available">Available only</label>
 
       <!-- By price -->
-      <!-- Max -->
-      <label for="maxPrice">Max price</label>
-      <input
-        type="range"
-        id="maxPrice"
-        name="maxPrice"
-        :min="searchDefault.minPrice"
-        :max="searchDefault.maxPrice"
-        v-model="search.maxPrice"
-      />
-      {{ search.maxPrice }}€
+      <p>
+        <!-- Min -->
+        {{ search.minPrice }}€<input
+          type="range"
+          id="minPrice"
+          name="minPrice"
+          :min="searchDefault.minPrice"
+          :max="searchDefault.maxPrice"
+          v-model="search.minPrice"
+        />
 
-      <!-- Min -->
-      <label for="minPrice">Min price</label>
-      <input
-        type="range"
-        id="minPrice"
-        name="minPrice"
-        :min="searchDefault.minPrice"
-        :max="searchDefault.maxPrice"
-        v-model="search.minPrice"
-      />
-      {{ search.minPrice }}€
+        <!-- Max -->
+        <input
+          type="range"
+          id="maxPrice"
+          name="maxPrice"
+          :min="searchDefault.minPrice"
+          :max="searchDefault.maxPrice"
+          v-model="search.maxPrice"
+        />
+        {{ search.maxPrice }}€
+      </p>
 
       <!-- By rating -->
-      <star-rating :increment="0.5" v-model="search.rating"></star-rating>
+      <star-rating
+        class="ratingStars"
+        :increment="0.5"
+        v-model="search.rating"
+        :show-rating="false"
+      ></star-rating>
 
       <!-- By color -->
       <multiselect
@@ -102,7 +106,6 @@
               background: props.option.color,
             }"
           >
-            <!-- <p v-if="props.option.color === 'other'">{{ "?" }}</p> -->
             <p
               :style="{
                 visibility:
@@ -116,19 +119,21 @@
       </multiselect>
     </form>
 
-    <!-- /Formulario de búsqueda -->
+    <!-- /Search form -->
     <button @click="resetSearch()">CLEAR</button>
 
-    <!-- Lista de productos -->
-    <p v-show="!filterProducts.length">No products to show</p>
-    <productcard
-      v-for="product in filterProducts"
-      :key="product.id"
-      :product="product"
-    ></productcard>
-    <!-- /Lista de productos -->
+    <!-- Product list -->
+    <div class="productsList">
+      <p v-show="!filterProducts.length && !loading">No products to show</p>
+      <productcard
+        v-for="product in filterProducts"
+        :key="product.id"
+        :product="product"
+      ></productcard>
+    </div>
+    <!-- /Product list -->
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -138,14 +143,14 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 import productcard from "@/components/ProductCard.vue";
 
 import Multiselect from "vue-multiselect";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 
 export default {
@@ -160,13 +165,13 @@ export default {
     return {
       loading: true,
 
-      //objeto tienda de la bbdd
+      //Product array
       products: [],
 
-      //Lista de categorías
+      //Category list
       categories: [],
 
-      //Lista de posibles colores
+      //Possible colors array
       colors: [
         {
           name: "black",
@@ -267,14 +272,13 @@ export default {
       var self = this;
       axios
         .get(process.env.VUE_APP_API_URL + "/products")
-        //si sale bien
+        //Success
         .then(function(response) {
-          console.log(response);
           self.products = response.data.result;
           self.categories = response.data.categories;
           self.loading = false;
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
     customLabel({ name, color }) {
@@ -307,7 +311,6 @@ export default {
       /* By type */
       if (search.type) {
         result = result.filter((product) => product.type === search.type);
-        console.log(search.type);
       }
 
       /* By max price */
@@ -369,6 +372,20 @@ export default {
 </script>
 
 <style scoped>
+#available {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 1rem;
+  margin-right: 0.2rem;
+  margin-bottom: 0;
+}
+
+select,
+input {
+  height: 2rem;
+}
+
+/* Color selector */
 .option__desc {
   height: 2rem;
   width: 2rem;
@@ -388,4 +405,5 @@ export default {
   justify-content: center;
   font-size: 1.5rem;
 }
+/* /Color selector */
 </style>

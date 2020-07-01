@@ -1,14 +1,14 @@
 <template>
   <div class="home">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Home" description="Home." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Home" description="Crafty home page." />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -19,37 +19,43 @@
     </div>
     <!-- /Spinner -->
 
-    <!-- Tienda promocionada -->
+    <!-- PROMOTED SHOP -->
     <div @click="goToShop(shop.shopId)" class="shop">
       <h2>{{ shop.name }}</h2>
-      <video :src="shop.video" autoplay width="500px">
-        No se puede reproducir.
+      <video :src="shop.video" autoplay loop width="500px">
+        Can not play.
       </video>
     </div>
-    <!-- /Tienda promocionada -->
+    <!-- /PROMOTED SHOP -->
 
-    <!-- Presentación de la web -->
+    <!-- WEB DESCRIPTION -->
+    <h1>Welcome to Crafty!</h1>
     <p>
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis enim
-      itaque porro impedit iste dicta, dolores, a ut blanditiis consequuntur
-      excepturi pariatur delectus sunt cum iusto! Praesentium dolor nihil
-      voluptatibus!
+      If you are searching for a unique item, this is your site!
     </p>
-    <!-- /Presentación de la web -->
+    <p>
+      Here you can find lots of different handmade products, already searching
+      for a forever home or made custom just for you!
+    </p>
+    <p>
+      Are you an artist yourself? Great! You can find handmade art supplies too!
+    </p>
+    <!-- /WEB DESCRIPTION -->
 
-    <router-link :to="{ name: 'Search' }" tag="button">EXPLORA</router-link>
+    <router-link :to="{ name: 'Search' }" tag="button">EXPLORE</router-link>
 
-    <!-- Productos destacados -->
-    <h3>Productos destacados</h3>
-    <p v-show="!products.length">No products to show</p>
-    <productcard
-      v-for="product in products"
-      :key="product.id"
-      :product="product"
-    ></productcard>
-    <!-- Productos destacados -->
+    <!-- Products -->
+    <div class="productsList">
+      <p v-show="!products.length && !loading">No products to show</p>
+      <productcard
+        v-for="product in products"
+        :key="product.id"
+        :product="product"
+      ></productcard>
+    </div>
+    <!-- /Products -->
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -59,12 +65,12 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 import productcard from "@/components/ProductCard.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -77,10 +83,10 @@ export default {
   },
   data() {
     return {
-      //Objeto de la tienda promocionada
+      //Promoted shop object
       shop: {},
 
-      //array de los productos de la bbdd
+      //Products array
       products: [],
       loading: true,
     };
@@ -90,14 +96,13 @@ export default {
       var self = this;
       axios
         .get(process.env.VUE_APP_API_URL)
-        //si sale bien
+        //Success
         .then(function(response) {
-          console.log(response);
           self.products = response.data.message.products;
           self.shop = response.data.message.promotedShop;
           self.loading = false;
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
 
@@ -111,8 +116,4 @@ export default {
 };
 </script>
 
-<style scoped>
-h2 {
-  margin-bottom: 1rem;
-}
-</style>
+<style scoped></style>

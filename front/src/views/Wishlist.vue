@@ -1,14 +1,20 @@
 <template>
   <div class="wishlist">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Wishlist" description="Wishlist page." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Wishlist" />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
+
+    <!-- Share link -->
+    <button @click="copyShareLink()">SHARE</button>
+    <!-- Link must be in a shown input in order to use document.execCommand("copy");-->
+    <input id="shareLink" type="text" v-model="shareLink" />
+    <!-- /Share link -->
 
     <h2 v-show="userName">{{ userName }}'s whislist</h2>
 
@@ -21,18 +27,20 @@
     </div>
     <!-- /Spinner -->
 
-    <!-- Lista de productos -->
-    <p v-show="!products.length">No products to show</p>
-    <productcard
-      v-for="(product, index) in products"
-      :key="product.id"
-      :product="product"
-      :showDelete="isOwner"
-      v-on:delete="deleteProduct(index)"
-    ></productcard>
-    <!-- /Lista de productos -->
+    <!-- Product list -->
+    <div class="productsList">
+      <p v-show="!products.length && !loading">No products to show</p>
+      <productcard
+        v-for="(product, index) in products"
+        :key="product.id"
+        :product="product"
+        :showDelete="isOwner"
+        v-on:delete="deleteProduct(index)"
+      ></productcard>
+    </div>
+    <!-- /Product list -->
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -42,15 +50,16 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 import productcard from "@/components/ProductCard.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
 
+//Importing function
 import { getUserId } from "../api/utils";
 
 export default {
@@ -67,9 +76,14 @@ export default {
       //Products array
       products: [],
 
+      //List owner's name
       userName: "User",
 
+      //User is owner of the wishlist
       isOwner: getUserId() === this.$route.params.userId,
+
+      //Wishlist share link
+      shareLink: process.env.VUE_APP_BASE_URL + this.$route.fullPath,
     };
   },
   methods: {
@@ -79,9 +93,8 @@ export default {
         .get(
           process.env.VUE_APP_API_URL + "/wishlist/" + self.$route.params.userId
         )
-        //si sale bien
+        //Success
         .then(function(response) {
-          console.log(response);
           const name = response.data.user[0].first_name;
           self.products = response.data.result;
           if (name) {
@@ -89,39 +102,57 @@ export default {
           }
           self.loading = false;
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
 
+    //Remove product from wishlist
     deleteProduct(index) {
       const productId = this.products[index].id;
       axios
         .delete(process.env.VUE_APP_API_URL + "/wishlist/" + productId)
-        //si sale bien
+        //Success: confirmation modal
         .then(function(response) {
-          console.log(response);
           Swal.fire({
             icon: "success",
             title: "Product removed",
 
             confirmButtonText: "Ok",
           }).then((result) => {
+            //Update list page
             location.reload();
           });
         })
-        //si sale mal
+        //error
         .catch((error) => console.log(error));
+    },
+
+    //Copy whishlist share link to clipboard
+    copyShareLink() {
+      const link = document.querySelector("#shareLink");
+      link.select();
+      document.execCommand("copy");
+
+      //Confirmation modal
+      Swal.fire({
+        icon: "success",
+        title: "Share link copied to clipboard",
+        text: "Share this link with whoever you want to see this wishlist.",
+
+        confirmButtonText: "Ok",
+      });
     },
   },
   created() {
     this.getProducts();
   },
-  watch: {
-    $route() {
-      this.$router.go();
-    },
-  },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Hide link input */
+#shareLink {
+  position: absolute;
+  top: -1000px;
+}
+</style>

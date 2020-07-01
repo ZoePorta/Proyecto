@@ -1,12 +1,10 @@
 <template>
   <div class="footer">
-    <p>Zoe 2020</p>
+    <p>Zoe Porta - 2020</p>
   </div>
 </template>
 
 <script>
-import { clearLogin, getName } from "../api/utils";
-
 export default {
   name: "FooterCustom",
 };

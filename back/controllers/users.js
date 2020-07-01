@@ -142,7 +142,7 @@ async function loginUser(req, res, next) {
     if (!user.active) {
       throw generateError(
         "User not validated. Please confirm you email before login.",
-        400
+        403
       );
     }
     //Build jsonwebtoken

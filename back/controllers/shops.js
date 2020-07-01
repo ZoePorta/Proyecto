@@ -22,8 +22,6 @@ async function getShop(req, res, next) {
       [shopId]
     );
 
-    console.log(products);
-
     if (!resultShop.length) {
       throw generateError(`Shop not found`, 404);
     }
@@ -121,7 +119,6 @@ async function editShop(req, res, next) {
       status: "ok",
       message: "Shop updated successfully.",
     });
-    console.log("llega hasta aqui");
   } catch (error) {
     next(error);
   } finally {
@@ -154,7 +151,6 @@ async function promoteShop(req, res, next) {
       status: "ok",
       message: `Shop ${shopId} is now promoted.`,
     });
-    console.log("llega hasta aqui");
   } catch (error) {
     next(error);
   } finally {

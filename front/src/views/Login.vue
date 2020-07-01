@@ -1,31 +1,31 @@
 <template>
   <div>
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Login" description="Formulario de acceso." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Login" description="Log in to your account." />
+    <!-- /CHANGE PAGE HEADER -->
 
-    <!-- CONTENIDO -->
+    <!-- MENU -->
+    <menucustom></menucustom>
+    <!-- /MENU -->
+
+    <!-- CONTENT -->
     <h2>
-      Haz login 👇
+      Log In 👇
     </h2>
 
     <div class="form">
-      <input type="text" placeholder="Escribe tu email" v-model="email" />
-      <input
-        type="password"
-        placeholder="Escribe tu contraseña"
-        v-model="password"
-      />
-      <button class="boton" @click="login()">
-        ENTRAR
+      <input type="text" placeholder="Email" v-model="email" />
+      <input type="password" placeholder="Password" v-model="password" />
+      <button @click="login()" :disabled="!email || !password">
+        LOG IN
       </button>
 
       <p>
-        ¿Aún no tienes cuenta?
-        <router-link :to="{ name: 'Register' }">¡Regístrate!</router-link>
+        Don't have an account?
+        <router-link :to="{ name: 'Register' }">Register!</router-link>
       </p>
     </div>
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -34,18 +34,21 @@
 </template>
 
 <script>
-//Importando componentes
+//Importing components
+import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 
-//Importando funciones
+//Importing functions
 import { loginUser } from "../api/utils";
 
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
 
 export default {
   name: "Login",
   components: {
+    menucustom,
     footercustom,
   },
   data() {
@@ -57,23 +60,27 @@ export default {
   methods: {
     async login() {
       try {
-        //INTENTO HACER LOGIN
+        //TRY LOG IN
         await loginUser(this.email, this.password);
-        //SI HAY LOGIN, QUE ME LLEVE AL LANDING
 
-        this.$router.push("/");
+        //Success: go back
+
+        this.$router.go(-1);
       } catch (error) {
+        //Error: show error modals
         console.log(error);
 
-        if (error.response.status === 500) {
+        if (error.response.status === 401) {
+          //Wrong user or password error
           Swal.fire({
             icon: "error",
-            title: "Server error",
-            text: "Try again later.",
+            title: "Wrong email or password.",
 
             confirmButtonText: "Ok",
           });
-        } else if (error.response.status === 400) {
+        } else if (error.response.status === 403) {
+          //Account not verified error
+          //Modal with option to resend verification mail
           Swal.fire({
             icon: "error",
             title: "Account not verified",
@@ -85,14 +92,15 @@ export default {
             confirmButtonText: "Resend email",
           }).then((result) => {
             if (result.value) {
-              console.log("ok");
               this.resendMail();
             }
           });
         } else {
+          //Unknown error
           Swal.fire({
             icon: "error",
-            title: "Wrong email or password.",
+            title: "Server error",
+            text: "Try again later.",
 
             confirmButtonText: "Ok",
           });
@@ -100,6 +108,7 @@ export default {
       }
     },
 
+    //Resend verificartion email function
     resendMail() {
       console.log("enviando");
       const self = this;
@@ -108,14 +117,16 @@ export default {
           email: self.email,
         })
         .then(
+          //Success: confirmation modal
           Swal.fire({
             icon: "success",
             title: "Email sent.",
             text: "Please, check your spam folder.",
             confirmButtonText: "Go to Home",
           }).then(
-            //Go to the index page
-            (result) => self.$router.push("/")
+            //Go back
+
+            this.$router.go(-1)
           )
         )
         .catch((error) => console.log(error));

@@ -1,61 +1,75 @@
 <template>
-  <div id="list">
-    <div
-      class="products"
-      :style="{ background: !product.available ? '#b1b1b1' : '#efefef' }"
-    >
-      <article @click="goToProduct(product.id)">
-        <figure>
-          <img class="productImg" :src="product.photo" :alt="product.name" />
-          <div
-            class="availability"
-            :style="{
-              background: !product.available
-                ? red
-                : product.type === 'ready'
-                ? green
-                : orange,
-            }"
-          ></div>
-        </figure>
+  <div id="productcard">
+    <div class="container">
+      <!-- Overlay to darken not available products -->
+      <div
+        class="products overlay"
+        v-show="!product.available"
+        @click="goToProduct(product.id)"
+      ></div>
+      <!-- /Overlay to darken not available products -->
 
-        <!-- Color swatches -->
-        <div
-          v-for="color in product.color.split(',')"
-          :key="color.id"
-          class="colorDiv"
-          :style="{
-            background:
-              color === 'other'
-                ? `white`
-                : color === 'multiple'
-                ? `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
+      <div class="products">
+        <article @click="goToProduct(product.id)">
+          <figure>
+            <img class="productImg" :src="product.photo" :alt="product.name" />
+
+            <!-- Colored dot showing availability -->
+            <div
+              class="availability"
+              :style="{
+                background: !product.available
+                  ? red
+                  : product.type === 'ready'
+                  ? green
+                  : orange,
+              }"
+            ></div>
+            <!-- /Colored dot showing availability -->
+          </figure>
+
+          <!-- Color swatches -->
+          <div
+            v-for="color in product.color.split(',')"
+            :key="color.id"
+            class="colorDiv"
+            :style="{
+              background:
+                color === 'other'
+                  ? `white`
+                  : color === 'multiple'
+                  ? `linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
             linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
             linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)`
-                : color,
-          }"
-        >
-          <p
-            :style="{
-              visibility: color === 'other' ? 'visible' : 'hidden',
+                  : color,
             }"
           >
-            ?
-          </p>
-        </div>
-        <!-- /Color swatches -->
+            <p
+              :style="{
+                visibility: color === 'other' ? 'visible' : 'hidden',
+              }"
+            >
+              ?
+            </p>
+          </div>
+          <!-- /Color swatches -->
 
-        <h1>{{ product.name }}</h1>
+          <h1>{{ product.name }}</h1>
 
-        <star-rating
-          :rating="+product.avgRating || 0"
-          :increment="0.01"
-          :read-only="true"
-          :star-size="20"
-        ></star-rating>
-        <p class="precio">{{ product.price }}€</p>
-      </article>
+          <!-- Rating -->
+          <star-rating
+            class="ratingStars"
+            :rating="+product.avgRating || 0"
+            :increment="0.01"
+            :read-only="true"
+            :star-size="20"
+            :show-rating="false"
+          ></star-rating>
+          <!-- /Rating -->
 
+          <p class="price">{{ product.price }}€</p>
+        </article>
+      </div>
       <img
         v-show="showDelete"
         @click="deleteEvent()"
@@ -87,13 +101,13 @@ export default {
     };
   },
   methods: {
-    //Funcion que emite un evento para comprar un producto
+    //Buy event emiting function
     deleteEvent() {
-      //Enviando el índice del producto a la vista
+      //Sending product index to view
       this.$emit("delete");
     },
 
-    //Función para ir a la página del producto
+    //Go to product page function
     goToProduct(id) {
       this.$router.push({ name: "Product", params: { id: id } });
     },
@@ -102,6 +116,40 @@ export default {
 </script>
 
 <style scoped>
+/* Card */
+.container {
+  border-radius: 1rem;
+  max-width: 800px;
+  width: 15rem;
+  height: 20rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  position: relative;
+  background: #efefef;
+  color: #070707;
+  overflow: hidden;
+}
+
+.products {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+/* Availability overlay */
+.overlay {
+  opacity: 0.2;
+  z-index: 1;
+
+  background: rgb(0, 0, 0);
+}
+/* /Availability overlay */
+/* /Card */
+
+/* Color swatches */
 .colorDiv {
   height: 1rem;
   width: 1rem;
@@ -115,11 +163,11 @@ export default {
 .colorDiv p {
   height: 100%;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin: 0;
 }
+/* /Color swatches */
 
+/* Availability dot */
 .availability {
   height: 0.8rem;
   width: 0.8rem;
@@ -129,98 +177,45 @@ export default {
   border: 1px solid black;
   border-radius: 50%;
 }
+/* /Availability dot */
 
-#list {
-  display: grid;
-}
-
-.products {
-  display: inline-block;
-  background: #efefef;
-  color: #070707;
-  border-radius: 1rem;
-  max-width: 800px;
-  width: 15rem;
-  height: 20rem;
-  margin: 1rem;
-  padding: 1rem;
-  /*   display: grid;
-  grid-template-columns: 1fr 8rem;
-  grid-template-rows: repeat(6, minmax(min-content, auto));
-  grid-template-areas:
-    "nombre  id"
-    "imagen imagen"
-    "precio precio"
-    "descripcion descripcion"
-    "stock disponibilidad"
-    "comprar comprar";
-  align-items: center;
-  justify-items: center; */
-}
-
-.products:hover {
-  cursor: pointer;
-}
-
-/* h1 {
-  grid-area: nombre;
-  position: relative;
-  left: 4rem;
+/* Product name */
+h1 {
+  font-size: 1.2rem;
   margin-bottom: 1rem;
-} */
+}
+/* /Product name */
 
+/* Product photo */
 figure {
-  grid-area: imagen;
-
   width: 100%;
 
   height: 10rem;
   overflow: hidden;
 
-  position: relative;
+  top: 0;
+  left: 0;
   text-align: center;
-  color: white;
 }
 
 img.productImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 5%;
+}
+/* Product photo */
+
+.price {
+  font-size: 1rem;
 }
 
-img.delete {
+/* Delete button */
+.delete {
+  z-index: 2;
+  position: absolute;
+  bottom: 8px;
   width: 1rem;
+  cursor: pointer;
 }
-
-/* .precio {
-  grid-area: precio;
-  font-size: 5rem;
-  align-self: flex-start;
-} */
-
-/* MEDIA QUERIES */
-/* @media (min-width: 700px) {
-  .products {
-    height: 25rem;
-
-    grid-template-columns: 1fr 1fr 8rem;
-    grid-template-rows: 3rem 3rem 1fr 3rem;
-    grid-template-areas:
-      "nombre nombre id"
-      "imagen precio disponibilidad"
-      "imagen descripcion descripcion"
-      "imagen stock comprar";
-  }
-
-  figure {
-    height: 100%;
-
-    min-width: 20rem;
-  }
-
-  .stock {
-    justify-self: center;
-  }
-} */
+/* /Delete button */
 </style>

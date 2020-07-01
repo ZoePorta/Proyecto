@@ -1,14 +1,14 @@
 <template>
   <div class="shop">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Tienda" description="Información de la tienda." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful :title="shop.name" description="Shop page." />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
+    <!-- CONTENT -->
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -20,20 +20,23 @@
     <!-- /Spinner -->
 
     <h1>{{ shop.name }}</h1>
-    <video :src="shop.video" autoplay width="500px">
-      No se puede reproducir.
+    <video :src="shop.video" autoplay loop width="500px">
+      Can not play.
     </video>
     <p>{{ shop.description }}</p>
 
-    <!-- Lista de productos -->
-    <p v-show="!products.length">No products to show</p>
-    <productcard
-      v-for="product in products"
-      :key="product.id"
-      :product="product"
-    ></productcard>
+    <!-- Product list -->
+    <div class="productsList">
+      <p v-show="!products.length && !loading">No products to show</p>
+      <productcard
+        v-for="product in products"
+        :key="product.id"
+        :product="product"
+      ></productcard>
+    </div>
+    <!-- /Product list -->
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -43,12 +46,12 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 import productcard from "@/components/ProductCard.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 
 export default {
@@ -62,8 +65,10 @@ export default {
     return {
       loading: true,
 
-      //objeto tienda de la bbdd
+      //Shop object
       shop: {},
+
+      //Products array
       products: [],
     };
   },
@@ -72,14 +77,13 @@ export default {
       var self = this;
       axios
         .get(process.env.VUE_APP_API_URL + "/shops/" + self.$route.params.id)
-        //si sale bien
+        //Success
         .then(function(response) {
-          console.log(response);
           self.shop = response.data.message;
           self.products = response.data.message.products;
           self.loading = false;
         })
-        //si sale mal
+        //Error
         .catch((error) => console.log(error));
     },
   },
@@ -90,52 +94,7 @@ export default {
 </script>
 
 <style scoped>
-h2 {
+h1 {
   margin-bottom: 1rem;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-
-  background: rgba(0, 0, 0, 0.5);
-
-  width: 100%;
-}
-
-/* formulario */
-.modalBox {
-  padding: 2rem 1rem;
-  width: 80%;
-  max-width: 30rem;
-  margin: 10rem auto;
-  border-radius: 1rem;
-  border: 1px solid #888888;
-  background: #efefef;
-  color: #070707;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-input {
-  width: 80%;
-  max-width: 15rem;
-  height: 2rem;
-  margin-bottom: 1rem;
-}
-
-.buttons {
-  widows: 100%;
-  display: flex;
-  justify-content: space-around;
-}
-
-button {
-  margin: 2rem 1rem;
-  margin-bottom: 0;
 }
 </style>

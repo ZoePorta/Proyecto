@@ -1,15 +1,19 @@
 <template>
   <div>
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="Registro" description="Página de registro." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="Register" description="Register a new account." />
+    <!-- /CHANGE PAGE HEADER -->
 
-    <!-- CONTENIDO -->
+    <!-- MENU -->
+    <menucustom></menucustom>
+    <!-- /MENU -->
+
+    <!-- CONTENT -->
     <h2>
-      Regístrate 👇
+      Register 👇
     </h2>
 
-    <!-- FORMULARIO -->
+    <!-- FORM -->
     <div class="form">
       <p class="error" v-show="errorMessage">{{ errorMessage }}</p>
 
@@ -23,20 +27,20 @@
       />
       <br />
 
-      <!-- Contraseña -->
-      <label for="password">Contraseña:</label>
+      <!-- Password -->
+      <label for="password">Password:</label>
       <input
         type="password"
         name="password"
         min="6"
         max="20"
-        placeholder="Contraseña..."
+        placeholder="Password..."
         v-model="password"
       />
       <br />
 
-      <!-- Repetir contraseña -->
-      <label for="repeatPassword">Repite la contraseña:</label>
+      <!-- Repeat password -->
+      <label for="repeatPassword">Password repeat:</label>
       <input
         type="password"
         name="repeatPassword"
@@ -45,8 +49,8 @@
       />
       <br />
 
-      <!-- Fecha de nacimiento -->
-      <label for="birthDate">Fecha de nacimiento:</label>
+      <!-- Birthdate -->
+      <label for="birthDate">Birthdate:</label>
       <input
         type="date"
         name="birthDate"
@@ -55,11 +59,11 @@
       />
 
       <button class="boton" @click="registerUser(email, password)">
-        REGISTRAR
+        REGISTER
       </button>
     </div>
 
-    <!-- /CONTENIDO -->
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -68,16 +72,18 @@
 </template>
 
 <script>
-//Importando componentes
+//Importing components
+import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
 
 export default {
   name: "Register",
   components: {
+    menucustom,
     footercustom,
   },
   data() {
@@ -99,24 +105,23 @@ export default {
         !this.repeatPassword ||
         !this.birthDate
       ) {
-        this.errorMessage = "Tienes datos aún por rellenar."; //Establecer mensaje de error
-        this.correctData = false; //NO ENVIAR
+        this.errorMessage = "You have empty fields left."; //Set error message
+        this.correctData = false; //DON'T SEND
       } else if (this.password.length < 6 || this.password.length > 20) {
-        this.errorMessage =
-          "La contraseña debe tener entre 6 y 20 caracteres.."; //Establecer mensaje de error
-        this.correctData = false; //NO ENVIAR
+        this.errorMessage = "Password must be between 6 and 20 characters."; //Set error message
+        this.correctData = false; //DON'T SEND
       } else if (this.password !== this.repeatPassword) {
-        this.errorMessage = "Las contraseñas no coinciden."; //Establecer mensaje de error
-        this.correctData = false; //NO ENVIAR
+        this.errorMessage = "Passwords don't match."; //Set error message
+        this.correctData = false; //DON'T SEND
       } else {
-        console.log("enviar");
-        this.correctData = true; //ENVIAR
-        this.errorMessage = ""; //NO SE MUESTRA EL MENSAJE
+        console.log("send");
+        this.correctData = true; //SEND
+        this.errorMessage = ""; //DON'T SHOW MESSAGE
       }
     },
 
     registerUser(email, password) {
-      this.validatingData(); //VALIDANDO DATOS DEL FORMULARIO
+      this.validatingData(); //VALIDATING FORM DATA
       if (this.correctData) {
         const self = this;
         axios
@@ -127,45 +132,47 @@ export default {
           })
           .then(function(response) {
             self.emptyFields();
-            console.log(response);
 
-            //Lanzar modal de confirmación
+            //Success: confirmation modal
             Swal.fire({
               icon: "success",
-              title: "Usuario registrado",
+              title: "User registered!",
               text:
-                "Hemos enviado un enlace de verificación a tu email. Si no lo encuentras, revisa la carpeta de spam.",
-              confirmButtonText: "Volver al inicio",
+                "We've sent you a verification email. Please check your spam folder.",
+              confirmButtonText: "BACK",
             }).then(
-              //Ir a la página de inicio
-              (result) => self.$router.push("/")
+              //Go back
+              (result) => self.$router.go(-1)
             );
           })
           .catch((error) => {
+            //Error: error modals
             console.log(error.response.status, error.response.data.message);
 
             if (error.response.status === 409) {
+              //Duplicated email error
               Swal.fire({
                 icon: "error",
-                title: "Email inválido",
-                text:
-                  "El email introducido ya está registrado en nuestra base de datos.",
+                title: "Invalid email",
+                text: "That email is already registered.",
 
                 confirmButtonText: "Ok",
               });
             } else if (error.response.status === 400) {
+              //Invalid mail error
               Swal.fire({
                 icon: "error",
-                title: "Email inválido",
-                text: "Por favor, introduce un email existente.",
+                title: "Invalid mail",
+                text: "Please, enter a valid email.",
 
                 confirmButtonText: "Ok",
               });
             } else {
+              //Unknown error
               Swal.fire({
                 icon: "error",
-                title: "Error desconocido",
-                text: "Inténtalo de nuevo más tarde.",
+                title: "Unknown error",
+                text: "Try again later.",
 
                 confirmButtonText: "Ok",
               });
@@ -174,7 +181,7 @@ export default {
       }
     },
 
-    //Funcion para obtener la fecha de nacimiento máxima de alguien mayor de edad
+    //Get max bithdate for an adult function
     getMaxDate() {
       const year = new Date().getFullYear() - 18;
 
