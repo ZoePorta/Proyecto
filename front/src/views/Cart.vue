@@ -169,6 +169,11 @@ export default {
 </script>
 
 <style scoped>
+table {
+  background: var(--block-bg-color);
+  border: 1px solid var(--border-color);
+}
+
 thead {
   cursor: default;
 }
@@ -177,7 +182,7 @@ tbody {
   cursor: pointer;
 }
 tr.selected {
-  background: rgb(97, 97, 97);
+  background: var(--enf-bg-color);
   font-weight: bold;
 }
 </style>

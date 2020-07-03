@@ -19,6 +19,8 @@
     </div>
     <!-- /Spinner -->
 
+    <usermenu></usermenu>
+
     <form class="profile">
       <img :src="user.photo" alt="Profile picture" />
 
@@ -49,6 +51,7 @@
 //Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
+import usermenu from "@/components/UserMenu.vue";
 
 //Importing library
 import axios from "axios";
@@ -61,6 +64,7 @@ export default {
   components: {
     menucustom,
     footercustom,
+    usermenu,
   },
   data() {
     return {
@@ -126,12 +130,13 @@ export default {
 
 <style scoped>
 .profile {
-  background: cornsilk;
+  background: var(--block-bg-color);
+  border: var(--border);
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: blue;
   padding: 1rem;
   width: 50%;
   margin: auto;
@@ -140,5 +145,7 @@ export default {
 img {
   width: 10rem;
   border-radius: 50%;
+  border: var(--border);
+  box-shadow: var(--shadow);
 }
 </style>

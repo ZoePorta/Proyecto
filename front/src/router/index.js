@@ -102,6 +102,17 @@ const routes = [
   },
 
   {
+    path: "/addresses",
+    name: "Addresses",
+    component: () => import("../views/Addresses.vue"),
+    meta: {
+      //Private route
+
+      allowAnonymous: false,
+    },
+  },
+
+  {
     path: "/profile",
     name: "Profile",
     component: () => import("../views/Profile.vue"),

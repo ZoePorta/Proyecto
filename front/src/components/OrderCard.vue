@@ -7,8 +7,8 @@
             <router-link
               :to="{ name: 'Product', params: { id: product.productId } }"
             >
-              <img :src="product.photo" alt="" />
-            </router-link>
+              <figure><img :src="product.photo" alt="" /></figure
+            ></router-link>
           </td>
           <td>
             <router-link
@@ -20,8 +20,9 @@
             <h2>{{ (product.price * product.quantity).toFixed(2) }}€</h2>
           </td>
           <td>
-            <p>Rate it</p>
+            <p>Rate it!</p>
             <star-rating
+              class="ratingStars"
               :increment="0.5"
               :star-size="30"
               v-model="rating"
@@ -158,15 +159,40 @@ img {
 }
 
 table {
-  background: ivory;
-  color: blue;
+  background: var(--block-bg-color);
   width: 100%;
   margin: auto;
   padding: 1rem;
-  border: 1px solid gray;
+  border: var(--border);
+}
+
+table {
+  border-radius: 1rem;
+  margin: 1rem auto;
+}
+tr {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
   font-size: 1.5rem;
+}
+
+figure {
+  width: 100%;
+  min-width: 10rem;
+
+  height: 15rem;
+  overflow: hidden;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1rem;
 }
 </style>

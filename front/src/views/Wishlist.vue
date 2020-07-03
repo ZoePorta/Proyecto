@@ -11,12 +11,18 @@
     <!-- CONTENT -->
 
     <!-- Share link -->
-    <button @click="copyShareLink()">SHARE</button>
     <!-- Link must be in a shown input in order to use document.execCommand("copy");-->
     <input id="shareLink" type="text" v-model="shareLink" />
     <!-- /Share link -->
 
-    <h2 v-show="userName">{{ userName }}'s whislist</h2>
+    <h2>
+      {{ userName }}'s whislist
+      <font-awesome-icon
+        v-show="isOwner"
+        @click="copyShareLink()"
+        icon="share"
+      />
+    </h2>
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -145,6 +151,12 @@ export default {
   },
   created() {
     this.getProducts();
+  },
+  watch: {
+    //If route params changes, change wishlist page
+    $route() {
+      this.$router.go();
+    },
   },
 };
 </script>

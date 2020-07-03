@@ -12,6 +12,17 @@ export default {
 
 <style>
 * {
+  /* Variables */
+  --main-bg-color: #e3f6f5;
+  --block-bg-color: #ffffff;
+  --text-color: #272343;
+  --enf-bg-color: #bae8e8;
+  --link-color: #1700aa;
+  --border: 1px solid #bae8e8;
+  --shadow: 2px 2px 5px #bae8e875, -2px -2px 5px #bae8e875;
+
+  /* /Variables */
+
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -26,9 +37,14 @@ li.multiselect__element {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #efefef;
-  background: #3454d1;
+  color: var(--text-color);
+  background: var(--main-bg-color);
   min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: var(--link-color);
 }
 
 .productsList {
@@ -43,6 +59,7 @@ li.multiselect__element {
 .ratingStars {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 /* Spinner */

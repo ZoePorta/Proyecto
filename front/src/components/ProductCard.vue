@@ -57,26 +57,24 @@
           <h1>{{ product.name }}</h1>
 
           <!-- Rating -->
-          <star-rating
-            class="ratingStars"
-            :rating="+product.avgRating || 0"
-            :increment="0.01"
-            :read-only="true"
-            :star-size="20"
-            :show-rating="false"
-          ></star-rating>
+          <p class="ratingStars">
+            <star-rating
+              :rating="+product.avgRating || 0"
+              :increment="0.01"
+              :read-only="true"
+              :star-size="20"
+              :show-rating="false"
+            ></star-rating>
+            | {{ product.votes }}
+          </p>
           <!-- /Rating -->
 
           <p class="price">{{ product.price }}€</p>
         </article>
       </div>
-      <img
-        v-show="showDelete"
-        @click="deleteEvent()"
-        class="delete"
-        src="../assets/deleteicon.svg"
-        alt="delete"
-      />
+      <p class="delete" @click="deleteEvent()" v-show="showDelete">
+        <font-awesome-icon icon="trash-alt" />
+      </p>
     </div>
   </div>
 </template>
@@ -125,9 +123,12 @@ export default {
   margin-bottom: 2rem;
   padding: 1rem;
   position: relative;
-  background: #efefef;
-  color: #070707;
+  background: var(--block-bg-color);
+
   overflow: hidden;
+
+  border: var(--border);
+  box-shadow: var(--shadow);
 }
 
 .products {
@@ -154,8 +155,9 @@ export default {
   height: 1rem;
   width: 1rem;
   display: inline-block;
-  color: black;
-  border: 1px solid black;
+  color: var(--text-color);
+  border: 1px solid var(--text-color);
+
   margin: 0.2rem;
   border-radius: 0.2rem;
 }
@@ -164,6 +166,7 @@ export default {
   height: 100%;
   width: 100%;
   margin: 0;
+  font-size: 0.8rem;
 }
 /* /Color swatches */
 
@@ -174,15 +177,16 @@ export default {
   position: absolute;
   top: 8px;
   right: 10px;
-  border: 1px solid black;
+  border: 1px solid var(--text-color);
   border-radius: 50%;
 }
 /* /Availability dot */
 
 /* Product name */
 h1 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
+  padding: 0.5rem;
 }
 /* /Product name */
 
@@ -196,6 +200,7 @@ figure {
   top: 0;
   left: 0;
   text-align: center;
+  margin-bottom: 0.5rem;
 }
 
 img.productImg {

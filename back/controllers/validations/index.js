@@ -193,51 +193,6 @@ const rateSchema = Joi.object().keys({
     ),
 });
 
-/* //Search//////////////////////
-const searchSchema = Joi.object().keys({
-  category: Joi.string()
-    .valid(...categories)
-    .error(generateError(`Must select a correct category.`, 400)),
-  words: Joi.string()
-    .max(100)
-    .error(
-      generateError("This field can not be longer than 100 characters.", 400)
-    ),
-  priceMax: Joi.number()
-    .positive()
-    .max(99999)
-    .default(99999)
-    .error(
-      generateError(
-        `You must set a price. It can be more than 99999 nor have more than two decimals.`,
-        400
-      )
-    ),
-  priceMin: Joi.number()
-    .positive()
-    .precision(2)
-    .default(0)
-    .max(99999)
-    .error(
-      generateError(
-        `You must set a price. It can be more than 99999 nor have more than two decimals.`,
-        400
-      )
-    ),
-  type: Joi.string()
-    .valid("available", "custom")
-    .error(generateError(`You must select a valid option.`, 400)),
-  color: Joi.array()
-    .items(Joi.string().valid(...colors))
-    .unique()
-    .error(generateError(`You must select one or more valid options.`, 400)),
-  avgRating: Joi.number()
-    .positive()
-    .precision(1)
-    .max(5)
-    .error(generateError(`You must vote with up to 5 points.`, 400)),
-}); */
-
 module.exports = {
   emailSchema,
   registerUserSchema,

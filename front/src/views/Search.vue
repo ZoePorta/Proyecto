@@ -89,6 +89,7 @@
 
       <!-- By color -->
       <multiselect
+        class="option__container"
         v-model="search.colors"
         placeholder="Color..."
         label="name"
@@ -386,6 +387,15 @@ input {
 }
 
 /* Color selector */
+/* .option__container {
+  width: 10rem;
+  margin: auto;
+} */
+
+/* *.multiselect--active {
+  border: 1px solid var(--border-color);
+} */
+
 .option__desc {
   height: 2rem;
   width: 2rem;
@@ -404,6 +414,10 @@ input {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+}
+
+:focus {
+  outline: none;
 }
 /* /Color selector */
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div class="orders">
+  <div class="addresses">
     <!-- CHANGE PAGE HEADER -->
-    <vue-headful title="Orders" description="Your finished orders." />
+    <vue-headful title="Addresses" description="Manage your addresses." />
     <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
@@ -12,7 +12,7 @@
 
     <usermenu></usermenu>
 
-    <h2>Finished orders</h2>
+    <h2>Your addresses</h2>
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -69,7 +69,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 export default {
-  name: "Orders",
+  name: "Addresses",
   components: {
     menucustom,
     footercustom,

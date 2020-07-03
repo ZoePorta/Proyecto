@@ -137,4 +137,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+table {
+  background: var(--block-bg-color);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 5%;
+  margin: auto;
+  padding: 1rem;
+}
+</style>

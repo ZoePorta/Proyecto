@@ -20,10 +20,8 @@
     <!-- /Spinner -->
 
     <h1>{{ product.name }}</h1>
-    <router-link
-      :to="{ name: 'Shop', params: { id: product.shopId } }"
-      tag="h2"
-      >{{ product.shopName }}</router-link
+    <router-link :to="{ name: 'Shop', params: { id: product.shopId } }">
+      <h2>{{ product.shopName }}</h2></router-link
     >
     <p>{{ product.description }}</p>
     <figure>
@@ -39,14 +37,16 @@
       </p>
     </figure>
 
-    <star-rating
-      class="ratingStars"
-      :rating="+product.avgRating || 0"
-      :increment="0.5"
-      :read-only="true"
-      :star-size="30"
-      :show-rating="false"
-    ></star-rating>
+    <p class="ratingStars">
+      <star-rating
+        :rating="+product.avgRating || 0"
+        :increment="0.5"
+        :read-only="true"
+        :star-size="30"
+        :show-rating="false"
+      ></star-rating>
+      | {{ product.votes }}
+    </p>
 
     <p class="precio">{{ product.price }}€</p>
 
@@ -128,6 +128,7 @@ export default {
         .get(process.env.VUE_APP_API_URL + "/products/" + self.$route.params.id)
         //Success
         .then(function(response) {
+          console.log(response);
           self.product = response.data.product;
           self.reviews = response.data.ratings;
           self.products = response.data.relatedProducts;

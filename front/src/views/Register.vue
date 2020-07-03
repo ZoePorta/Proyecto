@@ -226,12 +226,14 @@ p {
   max-width: 30rem;
   margin: auto;
   border-radius: 1rem;
-  background: #efefef;
-  color: #070707;
+  background: var(--block-bg-color);
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border: var(--border);
+  box-shadow: var(--shadow);
 }
 
 input {

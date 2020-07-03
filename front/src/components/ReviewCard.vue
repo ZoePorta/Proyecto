@@ -1,7 +1,7 @@
 <template>
   <div class="ratings">
     <h1>Buyer reviews</h1>
-    <table class="rating" v-for="(review, index) in reviews" :key="review.id">
+    <table class="rating" v-for="review in reviews" :key="review.id">
       <thead>
         <tr>
           <th>
@@ -39,11 +39,13 @@ export default {
 
 <style scoped>
 .ratings {
-  background: cornsilk;
-  color: blue;
+  background: var(--block-bg-color);
+
   margin: 2rem 1rem;
   padding: 1rem;
   border-radius: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow);
 }
 
 .rating {
