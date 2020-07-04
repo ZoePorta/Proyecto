@@ -8,6 +8,10 @@
     <menucustom></menucustom>
     <!-- /MENU -->
 
+    <!-- USER MENU -->
+    <usermenu></usermenu>
+    <!-- /USER MENU -->
+
     <!-- CONTENT -->
 
     <!-- Spinner -->
@@ -18,8 +22,6 @@
       <div></div>
     </div>
     <!-- /Spinner -->
-
-    <usermenu></usermenu>
 
     <form class="profile">
       <img :src="user.photo" alt="Profile picture" />

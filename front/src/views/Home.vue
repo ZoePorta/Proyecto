@@ -5,7 +5,7 @@
     <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
-    <menucustom></menucustom>
+    <menucustom :showSearch="false"></menucustom>
     <!-- /MENU -->
 
     <!-- CONTENT -->
@@ -20,8 +20,10 @@
     <!-- /Spinner -->
 
     <!-- PROMOTED SHOP -->
-    <div @click="goToShop(shop.shopId)" class="shop">
-      <h2>{{ shop.name }}</h2>
+    <div class="shop">
+      <router-link :to="{ name: 'Shop', params: { id: shop.shopId } }">
+        <h2>{{ shop.name }}</h2></router-link
+      >
       <video :src="shop.video" autoplay loop width="500px">
         Can not play.
       </video>
@@ -42,7 +44,9 @@
     </p>
     <!-- /WEB DESCRIPTION -->
 
-    <router-link :to="{ name: 'Search' }" tag="button">EXPLORE</router-link>
+    <router-link class="button" :to="{ name: 'Search' }" tag="button"
+      >EXPLORE</router-link
+    >
 
     <!-- Products -->
     <div class="productsList">

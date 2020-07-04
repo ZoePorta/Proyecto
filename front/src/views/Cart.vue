@@ -19,41 +19,43 @@
     </div>
     <!-- /Spinner -->
 
-    <!-- Product list -->
-    <div class="productsList">
-      <p v-show="!products.length && !loading">No products to show</p>
-      <productcard
-        v-for="(product, index) in products"
-        :key="product.id"
-        :product="product"
-        :showDelete="true"
-        v-on:delete="deleteProduct(index)"
-      >
-      </productcard>
-    </div>
-    <!-- /Product list -->
-
-    <!-- Addresses -->
-
-    <table class="adresses">
-      <thead>
-        <tr>
-          <th>
-            Select address...
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="address in addresses"
-          :key="address.id"
-          :class="{ selected: address.id === addressId }"
-          @click="addressId = address.id"
+    <div class="container">
+      <!-- Product list -->
+      <div class="productsList">
+        <p v-show="!products.length && !loading">No products to show</p>
+        <productcard
+          v-for="(product, index) in products"
+          :key="product.id"
+          :product="product"
+          :showDelete="true"
+          v-on:delete="deleteProduct(index)"
         >
-          <td>{{ address.alias }}</td>
-        </tr>
-      </tbody>
-    </table>
+        </productcard>
+      </div>
+      <!-- /Product list -->
+
+      <!-- Addresses -->
+
+      <table class="adresses">
+        <thead>
+          <tr>
+            <th>
+              Select address...
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="address in addresses"
+            :key="address.id"
+            :class="{ selected: address.id === addressId }"
+            @click="addressId = address.id"
+          >
+            <td>{{ address.alias }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- /Addresses -->
 
@@ -61,6 +63,7 @@
     <router-link
       :to="{ name: 'Checkout', params: { addressId } }"
       tag="button"
+      class="button"
       :disabled="!checkAvailability"
       >CHECKOUT</router-link
     >
@@ -169,9 +172,20 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  max-width: 800px;
+  display: grid;
+  grid-template-columns: 1fr 15rem;
+}
+
 table {
-  background: var(--block-bg-color);
-  border: 1px solid var(--border-color);
+  background: var(--enf-bg-color);
+  border: var(--border);
+  box-shadow: var(--shadow);
+
+  border-radius: 5px;
+  margin-top: 3rem;
+  height: 10rem;
 }
 
 thead {
@@ -180,9 +194,10 @@ thead {
 
 tbody {
   cursor: pointer;
+  background: var(--block-bg-color);
 }
 tr.selected {
-  background: var(--enf-bg-color);
+  background: var(--main-bg-color);
   font-weight: bold;
 }
 </style>

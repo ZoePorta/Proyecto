@@ -154,21 +154,17 @@ export default {
 </script>
 
 <style scoped>
-img {
-  width: 10rem;
-}
-
 table {
   background: var(--block-bg-color);
   width: 100%;
-  margin: auto;
+
   padding: 1rem;
   border: var(--border);
+  border-radius: 1rem;
+  margin: 1rem auto;
 }
 
 table {
-  border-radius: 1rem;
-  margin: 1rem auto;
 }
 tr {
   display: grid;

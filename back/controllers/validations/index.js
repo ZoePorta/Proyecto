@@ -80,7 +80,7 @@ const addressSchema = Joi.object().keys({
     .max(255)
     .required()
     .error(generateError("City can not be longer than 255 characters.", 400)),
-  postalCode: Joi.number()
+  PC: Joi.number()
     .integer()
     .positive()
     .max(9999999999)
@@ -95,11 +95,12 @@ const addressSchema = Joi.object().keys({
   prefix: Joi.string()
     .max(5)
     .error(generateError("Prefix can not be longer than 5 characters.", 400)),
-  phoneNumber: Joi.number()
+  phone_number: Joi.number()
     .integer()
     .positive()
     .max(9999999999)
     .error(generateError(`Please, enter a valid phone number.`)),
+  addressId: Joi.number(),
 });
 
 //////

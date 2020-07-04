@@ -16,7 +16,7 @@
     <div class="form">
       <input type="text" placeholder="Email" v-model="email" />
       <input type="password" placeholder="Password" v-model="password" />
-      <button @click="login()" :disabled="!email || !password">
+      <button class="button" @click="login()" :disabled="!email || !password">
         LOG IN
       </button>
 

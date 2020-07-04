@@ -20,37 +20,12 @@
     <!-- /Spinner -->
 
     <!-- Address info -->
-    <table>
-      <thead>
-        <tr>
-          <th>Shipping to {{ address.alias }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            {{ address.name }}
-          </td>
-        </tr>
-        <tr>
-          <td>{{ address.row1 }} {{ address.row2 }}</td>
-        </tr>
-        <tr>
-          <td>{{ address.city }} - {{ address.PC }}</td>
-        </tr>
-        <tr>
-          <td>
-            {{ address.country }}
-          </td>
-        </tr>
-        <tr>
-          <td>{{ address.prefix }} - {{ address.phone_number }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <h2>Shipping to...</h2>
+    <addresscard :addresses="[address]"></addresscard>
+
     <!-- /Address info -->
 
-    <button @click="payOrder()">PAY {{ price }}€</button>
+    <button class="button" @click="payOrder()">PAY {{ price }}€</button>
 
     <!-- /CONTENT -->
 
@@ -65,6 +40,7 @@
 //Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
+import addresscard from "@/components/AddressCard.vue";
 
 //Importing library
 import axios from "axios";
@@ -75,6 +51,7 @@ export default {
   components: {
     menucustom,
     footercustom,
+    addresscard,
   },
   data() {
     return {

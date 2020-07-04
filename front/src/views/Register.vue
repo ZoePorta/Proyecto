@@ -58,7 +58,7 @@
         :max="getMaxDate()"
       />
 
-      <button class="boton" @click="registerUser(email, password)">
+      <button class="button" @click.prevent="registerUser(email, password)">
         REGISTER
       </button>
     </div>

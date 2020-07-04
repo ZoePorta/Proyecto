@@ -50,14 +50,10 @@
 
     <p class="precio">{{ product.price }}€</p>
 
-    <button
-      class="addToCartButton"
-      @click="addToCart()"
-      :disabled="!product.available"
-    >
+    <button class="button" @click="addToCart()" :disabled="!product.available">
       ADD TO CART
     </button>
-    <button class="wishlistButton" @click="addToWishlist()">
+    <button class="button" @click="addToWishlist()">
       ADD TO WISHLIST
     </button>
 
@@ -241,10 +237,5 @@ export default {
 <style scoped>
 img {
   width: 500px;
-}
-
-button {
-  margin: 2rem 1rem;
-  margin-bottom: 0;
 }
 </style>

@@ -8,11 +8,15 @@
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENT -->
-
+    <!-- USER MENU -->
     <usermenu></usermenu>
+    <!-- /USER MENU -->
 
-    <h2>Your addresses</h2>
+    <!-- CONTENT -->
+    <h2>
+      Your addresses
+      <font-awesome-icon class="icon" @click="openNewModal()" icon="plus" />
+    </h2>
 
     <!-- Spinner -->
     <div v-show="loading" class="lds-ellipsis">
@@ -23,30 +27,59 @@
     </div>
     <!-- /Spinner -->
 
-    <!-- Order list -->
-    <p v-show="!orders && !loading">No orders to show</p>
+    <!-- Address list -->
+    <p v-show="!addresses && !loading">No addresses to show</p>
 
-    <table v-for="order in orders" :key="order.id">
-      <thead>
-        <tr>
-          <th>{{ new Date(order.sell_date).toLocaleString() }}</th>
-          <td>Shipped to {{ order.alias }}</td>
-          <td>Total price: {{ order.price }}€</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colspan="3">
-            <ordercard
-              v-for="product in order.products"
-              :key="product.id"
-              :product="product"
-            ></ordercard>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- /Order list -->
+    <addresscard
+      :addresses="addresses"
+      :showDelete="true"
+      @delete="deleteAddress"
+      @edit="openEditModal"
+    ></addresscard>
+
+    <!-- /Address list -->
+
+    <!-- Address form -->
+    <div v-show="modal" class="modal">
+      <form class="modalBox">
+        <label for="alias">Alias:</label>
+        <input type="text" id="alias" v-model="address.alias" />
+
+        <label for="name ">Name:</label>
+        <input type="text" name="name" v-model="address.name" />
+
+        <label for="row1">Row 1:</label>
+        <input type="text" name="row1" v-model="address.row1" />
+
+        <label for="row2">Row 2:</label>
+        <input type="text" name="row2" v-model="address.row2" />
+
+        <label for="city">City:</label>
+        <input type="text" name="city" v-model="address.city" />
+
+        <label for="PC">Postal Code:</label>
+        <input type="number" name="PC" v-model="address.PC" />
+
+        <label for="county">Country:</label>
+        <input type="text" name="country" v-model="address.country" />
+
+        <label for="prefix">Prefix:</label>
+        <input type="text" name="prefix" v-model="address.prefix" />
+
+        <label for="phone_number">Phone Number::</label>
+        <input
+          type="number"
+          name="phone_number"
+          v-model="address.phone_number"
+        />
+
+        <div>
+          <button class="button" @click.prevent="closeModal()">Close</button>
+          <button class="button" @click.prevent="save()">Save</button>
+        </div>
+      </form>
+    </div>
+    <!-- /Address form -->
 
     <!-- /CONTENT -->
 
@@ -61,7 +94,7 @@
 //Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
-import ordercard from "@/components/OrderCard.vue";
+import addresscard from "@/components/AddressCard.vue";
 import usermenu from "@/components/UserMenu.vue";
 
 //Importing library
@@ -73,25 +106,35 @@ export default {
   components: {
     menucustom,
     footercustom,
-    ordercard,
+    addresscard,
     usermenu,
   },
   data() {
     return {
       loading: true,
 
-      //Orders array
-      orders: [],
+      //Addresses array
+      addresses: [],
+
+      //Modal address
+      address: {},
+
+      //Modal visibility
+      modal: false,
+
+      //Modal function
+      newAddress: true,
     };
   },
   methods: {
-    getOrders() {
+    getAddresses() {
       var self = this;
       axios
-        .get(process.env.VUE_APP_API_URL + "/orders")
+        .get(process.env.VUE_APP_API_URL + "/addresses")
         //Success
         .then(function(response) {
-          self.orders = response.data.result;
+          console.log(response);
+          self.addresses = response.data.addresses;
 
           self.loading = false;
         })
@@ -99,16 +142,15 @@ export default {
         .catch((error) => console.log(error));
     },
 
-    //Function to remove item from order
-    deleteProduct(index) {
-      const productId = this.products[index].id;
+    //Function to remove address
+    deleteAddress(id) {
       axios
-        .delete(process.env.VUE_APP_API_URL + "/wishlist/" + productId)
+        .delete(process.env.VUE_APP_API_URL + "/addresses/" + id)
         //Success: confirmation modal
         .then(function(response) {
           Swal.fire({
             icon: "success",
-            title: "Product removed",
+            title: "Address removed",
 
             confirmButtonText: "Ok",
           }).then((result) => {
@@ -118,9 +160,95 @@ export default {
         //Error
         .catch((error) => console.log(error));
     },
+
+    //Function to edit address
+    editAddress() {
+      const self = this;
+
+      axios
+        .put(
+          process.env.VUE_APP_API_URL + "/addresses/" + self.address.addressId,
+          {
+            address: self.address,
+          }
+        )
+        //Success: confirmation modal
+        .then(function(response) {
+          Swal.fire({
+            icon: "success",
+            title: "Address updated",
+
+            confirmButtonText: "Ok",
+          }).then((result) => {
+            location.reload();
+          });
+        })
+        //Error
+        .catch((error) => console.log(error));
+    },
+
+    //Function to add a new address
+    addNewAddress() {
+      const self = this;
+
+      axios
+        .post(process.env.VUE_APP_API_URL + "/addresses/", {
+          address: self.address,
+        })
+        //Success: confirmation modal
+        .then(function(response) {
+          Swal.fire({
+            icon: "success",
+            title: "Address added",
+
+            confirmButtonText: "Ok",
+          }).then((result) => {
+            location.reload();
+          });
+        })
+        //Error
+        .catch((error) => console.log(error));
+    },
+
+    //Function to open modal with address data
+    openEditModal(index) {
+      this.address = this.addresses[index];
+      this.newAddress = false;
+      this.modal = true;
+    },
+
+    //Function to open modal with blank address data
+    openNewModal(index) {
+      this.address = {
+        PC: null,
+
+        alias: "",
+        city: "",
+        country: "",
+        name: "",
+        phone_number: null,
+        prefix: "",
+        row1: "",
+        row2: "",
+      };
+      this.newAddress = true;
+      this.modal = true;
+    },
+
+    closeModal() {
+      this.modal = false;
+    },
+
+    save() {
+      if (this.newAddress) {
+        this.addNewAddress();
+      } else {
+        this.editAddress();
+      }
+    },
   },
   created() {
-    this.getOrders();
+    this.getAddresses();
   },
 };
 </script>
@@ -135,5 +263,37 @@ table {
   border-radius: 1rem;
   padding: 1rem;
   background: var(--enf-bg-color);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  background: rgba(0, 0, 0, 0.5);
+
+  width: 100%;
+}
+
+/* formulario */
+.modalBox {
+  padding: 2rem 1rem;
+  width: 80%;
+  max-width: 30rem;
+  margin: 10rem auto;
+  border-radius: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow);
+  background: var(--block-bg-color);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  cursor: pointer;
 }
 </style>

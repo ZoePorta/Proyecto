@@ -26,10 +26,20 @@ import {
   faUser,
   faTrashAlt,
   faShare,
+  faPencilAlt,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faShoppingCart, faHeart, faUser, faTrashAlt, faShare);
+library.add(
+  faShoppingCart,
+  faHeart,
+  faUser,
+  faTrashAlt,
+  faShare,
+  faPencilAlt,
+  faPlus
+);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 /* /Font awesome icons */

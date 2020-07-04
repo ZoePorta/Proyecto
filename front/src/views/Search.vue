@@ -5,7 +5,7 @@
     <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
-    <menucustom></menucustom>
+    <menucustom :showSearch="false"></menucustom>
     <!-- /MENU -->
 
     <!-- CONTENT -->
@@ -295,6 +295,9 @@ export default {
   created() {
     this.getProducts();
     this.resetSearch();
+    if (this.$route.query && this.$route.query.words) {
+      this.search.words = this.$route.query.words;
+    }
   },
 
   computed: {

@@ -20,13 +20,9 @@ async function listAddress(req, res, next) {
       [userId]
     );
 
-    if (!addresses.length) {
-      throw generateError(`You don't have any addresses yet.`, 404);
-    }
-
     res.send({
       status: "ok",
-      message: addresses,
+      addresses,
     });
   } catch (error) {
     next(error);
@@ -41,7 +37,8 @@ async function listAddress(req, res, next) {
 async function addAddress(req, res, next) {
   let connection;
   try {
-    await addressSchema.validateAsync(req.body);
+    const { address } = req.body;
+    await addressSchema.validateAsync(address);
     const { userId } = req.auth;
     const {
       alias,
@@ -49,11 +46,11 @@ async function addAddress(req, res, next) {
       row1,
       row2,
       city,
-      postalCode,
+      PC,
       country,
       prefix,
-      phoneNumber,
-    } = req.body;
+      phone_number,
+    } = address;
 
     connection = await getConnection();
 
@@ -62,18 +59,7 @@ async function addAddress(req, res, next) {
   INSERT INTO addresses (users_id, alias, name, row1, row2, city, PC, country, prefix, phone_number)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `,
-      [
-        userId,
-        alias,
-        name,
-        row1,
-        row2,
-        city,
-        postalCode,
-        country,
-        prefix,
-        phoneNumber,
-      ]
+      [userId, alias, name, row1, row2, city, PC, country, prefix, phone_number]
     );
 
     res.send({
@@ -93,7 +79,8 @@ async function addAddress(req, res, next) {
 async function modifyAddress(req, res, next) {
   let connection;
   try {
-    await addressSchema.validateAsync(req.body);
+    const { address } = req.body;
+    await addressSchema.validateAsync(address);
     const { userId, role } = req.auth;
     const { addressId } = req.params;
 
@@ -119,11 +106,13 @@ SELECT users_id FROM addresses WHERE id=?
       row1,
       row2,
       city,
-      postalCode,
+      PC,
       country,
       prefix,
-      phoneNumber,
-    } = req.body;
+      phone_number,
+    } = address;
+
+    console.log(alias);
 
     await connection.query(
       `
@@ -135,10 +124,10 @@ SELECT users_id FROM addresses WHERE id=?
         row1,
         row2,
         city,
-        postalCode,
+        PC,
         country,
         prefix,
-        phoneNumber,
+        phone_number,
         addressId,
       ]
     );

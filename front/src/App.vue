@@ -17,7 +17,7 @@ export default {
   --block-bg-color: #ffffff;
   --text-color: #272343;
   --enf-bg-color: #bae8e8;
-  --link-color: #1700aa;
+  --link-color: #0a7c86;
   --border: 1px solid #bae8e8;
   --shadow: 2px 2px 5px #bae8e875, -2px -2px 5px #bae8e875;
 
@@ -60,6 +60,30 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.button {
+  padding: 0.2rem 0.5rem;
+  margin: 1rem;
+  background: rgb(39, 35, 67);
+  background: rgb(2, 64, 74);
+  background: linear-gradient(
+    0deg,
+    rgba(2, 64, 74, 1) 0%,
+    rgba(18, 172, 187, 1) 100%
+  );
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  border: var(--border);
+  box-shadow: var(--shador);
+  border-radius: 3px;
+}
+
+video {
+  border-radius: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow);
 }
 
 /* Spinner */

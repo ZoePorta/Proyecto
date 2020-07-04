@@ -8,9 +8,11 @@
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENT -->
-
+    <!-- USER MENU -->
     <usermenu></usermenu>
+    <!-- /USER MENU -->
+
+    <!-- CONTENT -->
 
     <h2>Finished orders</h2>
 

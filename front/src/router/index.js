@@ -25,6 +25,17 @@ const routes = [
 
       allowAnonymous: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (isLoggedIn()) {
+        next({
+          //Send user lo home
+          path: "/",
+          query: { redirect: to.fullPath },
+        });
+      } else {
+        next();
+      }
+    },
   },
 
   {
@@ -35,6 +46,17 @@ const routes = [
       //Public route
 
       allowAnonymous: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (isLoggedIn()) {
+        next({
+          //Send user lo home
+          path: "/",
+          query: { redirect: to.fullPath },
+        });
+      } else {
+        next();
+      }
     },
   },
 
