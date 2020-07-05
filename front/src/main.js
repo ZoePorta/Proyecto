@@ -28,7 +28,13 @@ import {
   faShare,
   faPencilAlt,
   faPlus,
+  faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFacebook,
+  faTwitter,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(
@@ -38,7 +44,11 @@ library.add(
   faTrashAlt,
   faShare,
   faPencilAlt,
-  faPlus
+  faPlus,
+  faQuestionCircle,
+  faInstagram,
+  faFacebook,
+  faTwitter
 );
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);

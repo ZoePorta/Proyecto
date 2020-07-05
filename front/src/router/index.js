@@ -168,6 +168,17 @@ const routes = [
   },
 
   {
+    path: "/about",
+    name: "About",
+    component: () => import("../views/About.vue"),
+    meta: {
+      //Public route
+
+      allowAnonymous: true,
+    },
+  },
+
+  {
     path: "*",
     name: "Error404",
     component: () => import("../views/Error404.vue"),

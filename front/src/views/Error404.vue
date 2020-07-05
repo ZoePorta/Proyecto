@@ -9,8 +9,11 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
-    <h1>Are you lost 🙀?</h1>
-    <p>There's nothing here.</p>
+    <div class="contentContainer">
+      <figure>
+        <img src="../assets/404.svg" alt="Error 404: Page not found." />
+      </figure>
+    </div>
     <!-- /CONTENT -->
 
     <!-- FOOTER -->
@@ -36,3 +39,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+img {
+  width: 90%;
+  min-width: 10rem;
+  max-width: 800px;
+  max-height: 70vh;
+}
+</style>

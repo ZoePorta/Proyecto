@@ -1,30 +1,20 @@
 <template>
   <div class="about">
-    <!-- CAMBIAR TITULO DE LA PÁGINA -->
-    <vue-headful title="About" description="Información sobre esta web." />
-    <!-- /CAMBIAR TITULO DE LA PAGINA -->
+    <!-- CHANGE PAGE HEADER -->
+    <vue-headful title="About" description="About me." />
+    <!-- /CHANGE PAGE HEADER -->
 
     <!-- MENU -->
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- CONTENIDO -->
-    <h1>Esta página...</h1>
-    <avatar></avatar>
-    <p>
-      ha sido creada por
-      <a href="https://www.linkedin.com/in/zoeporta/">Zoe</a>,
-    </p>
-    <p>
-      usando
-      <a href="">Vue.js</a>, <a href="https://github.com/axios/axios">Axios</a>,
-      <a href="https://sweetalert2.github.io/">Sweet Alert 2</a>,
-      <a href="https://github.com/troxler/vue-headful">Vue-Headful</a>,
-      <a href="https://github.com/orgordin/vuejs-avataaars">Vuejs-Avataaars</a>,
-      <a href="https://animate.style/">Animate.css</a> y
-      <a href="https://loading.io/css/">Pure CSS Loader</a>.
-    </p>
-    <!-- /CONTENIDO -->
+    <!-- CONTENT -->
+    <div class="contentContainer">
+      <figure>
+        <img src="../assets/404.svg" alt="Error 404: Page not found." />
+      </figure>
+    </div>
+    <!-- /CONTENT -->
 
     <!-- FOOTER -->
     <footercustom></footercustom>
@@ -34,36 +24,27 @@
 
 <script>
 // @ is an alias to /src
-//Importando componentes
+//Importing components
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
-import avatar from "@/components/Avatar.vue";
 
-//Importando librería
+//Importing library
 import axios from "axios";
 
 export default {
-  name: "About",
+  name: "about",
   components: {
     menucustom,
     footercustom,
-    avatar,
   },
 };
 </script>
 
 <style scoped>
-p {
-  max-width: 25rem;
-  margin: 0 auto;
-}
-
-a {
-  color: rgb(149, 255, 181);
-  text-decoration: none;
-}
-
-a:visited {
-  color: #34d1bf;
+img {
+  width: 90%;
+  min-width: 10rem;
+  max-width: 800px;
+  max-height: 70vh;
 }
 </style>

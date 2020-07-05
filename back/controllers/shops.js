@@ -10,7 +10,7 @@ async function getShop(req, res, next) {
 
     const [resultShop] = await connection.query(
       `
-    SELECT name, video, description FROM shops WHERE id=? 
+    SELECT name, video, description, twitter, instagram, facebook FROM shops WHERE id=? 
     `,
       [shopId]
     );
@@ -26,8 +26,22 @@ async function getShop(req, res, next) {
       throw generateError(`Shop not found`, 404);
     }
 
-    const { name, video, description } = resultShop[0];
-    const payload = { name, description, products };
+    const {
+      name,
+      video,
+      description,
+      twitter,
+      instagram,
+      facebook,
+    } = resultShop[0];
+    const payload = {
+      name,
+      description,
+      products,
+      twitter,
+      instagram,
+      facebook,
+    };
 
     if (video) {
       payload.video = video;

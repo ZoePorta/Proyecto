@@ -9,73 +9,74 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
-
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <!-- /Spinner -->
-
-    <div class="container">
-      <!-- Product list -->
-      <div class="productsList">
-        <p v-show="!products.length && !loading">No products to show</p>
-        <productcard
-          v-for="(product, index) in products"
-          :key="product.id"
-          :product="product"
-          :showDelete="true"
-          v-on:delete="deleteProduct(index)"
-        >
-        </productcard>
+    <div class="contentContainer">
+      <h1>Your Shopping Cart</h1>
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
-      <!-- /Product list -->
+      <!-- /Spinner -->
 
-      <!-- Addresses -->
-
-      <table class="adresses">
-        <thead>
-          <tr>
-            <th>
-              Select address...
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="address in addresses"
-            :key="address.id"
-            :class="{ selected: address.id === addressId }"
-            @click="addressId = address.id"
+      <div class="container">
+        <!-- Product list -->
+        <div class="productsList">
+          <p v-show="!products.length && !loading">No products to show</p>
+          <productcard
+            v-for="(product, index) in products"
+            :key="product.id"
+            :product="product"
+            :showDelete="true"
+            v-on:delete="deleteProduct(index)"
           >
-            <td>{{ address.alias }}</td>
-          </tr>
-        </tbody>
-      </table>
+          </productcard>
+        </div>
+        <!-- /Product list -->
+
+        <!-- Addresses -->
+
+        <table class="adresses">
+          <thead>
+            <tr>
+              <th>
+                Select address...
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="address in addresses"
+              :key="address.id"
+              :class="{ selected: address.id === addressId }"
+              @click="addressId = address.id"
+            >
+              <td>{{ address.alias }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- /Addresses -->
+
+      <!-- Checkout button -->
+      <router-link
+        :to="{ name: 'Checkout', params: { addressId } }"
+        tag="button"
+        class="button"
+        :disabled="!checkAvailability"
+        >CHECKOUT</router-link
+      >
+      <!-- /Checkout button -->
+
+      <!-- Error message -->
+      <p v-show="!checkAvailability">
+        Some products are not available right now, please remove them from your
+        order.
+      </p>
+      <!-- /Error message -->
     </div>
-
-    <!-- /Addresses -->
-
-    <!-- Checkout button -->
-    <router-link
-      :to="{ name: 'Checkout', params: { addressId } }"
-      tag="button"
-      class="button"
-      :disabled="!checkAvailability"
-      >CHECKOUT</router-link
-    >
-    <!-- /Checkout button -->
-
-    <!-- Error message -->
-    <p v-show="!checkAvailability">
-      Some products are not available right now, please remove them from your
-      order.
-    </p>
-    <!-- /Error message -->
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->
@@ -173,7 +174,6 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 800px;
   display: grid;
   grid-template-columns: 1fr 15rem;
 }

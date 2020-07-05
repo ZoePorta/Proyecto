@@ -41,7 +41,7 @@ async function getProduct(req, res, next) {
     const { category } = product;
     const [relatedProducts] = await connection.query(
       `
-    SELECT pr.id, name, price, available, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE AVAILABLE=1 AND category=? AND NOT pr.id=? group by pr.id 
+    SELECT pr.id, name, category, price, available, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE AVAILABLE=1 AND category=? AND NOT pr.id=? group by pr.id 
     `,
       [category, productId]
     );

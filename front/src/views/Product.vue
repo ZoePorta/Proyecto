@@ -9,71 +9,75 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
+    <div class="contentContainer">
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
 
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <!-- /Spinner -->
-
-    <h1>{{ product.name }}</h1>
-    <router-link :to="{ name: 'Shop', params: { id: product.shopId } }">
-      <h2>{{ product.shopName }}</h2></router-link
-    >
-    <p>{{ product.description }}</p>
-    <figure>
-      <img :src="product.photo" :alt="product.name" />
-      <p
-        class="availability"
-        :class="{
-          green: product.available,
-          red: !product.available,
-        }"
+      <h1>{{ product.name }}</h1>
+      <router-link :to="{ name: 'Shop', params: { id: product.shopId } }">
+        <h2>{{ product.shopName }}</h2></router-link
       >
-        ● {{ !product.available ? "Not available" : product.type }}
+      <figure>
+        <img :src="product.photo" :alt="product.name" />
+        <p class="description">{{ product.description }}</p>
+        <p
+          class="availability"
+          :class="{
+            green: product.available,
+            red: !product.available,
+          }"
+        >
+          ● {{ !product.available ? "Not available" : product.type }}
+        </p>
+      </figure>
+
+      <p class="ratingStars">
+        <star-rating
+          :rating="+product.avgRating || 0"
+          :increment="0.5"
+          :read-only="true"
+          :star-size="30"
+          :show-rating="false"
+        ></star-rating>
+        | {{ product.votes }}
       </p>
-    </figure>
 
-    <p class="ratingStars">
-      <star-rating
-        :rating="+product.avgRating || 0"
-        :increment="0.5"
-        :read-only="true"
-        :star-size="30"
-        :show-rating="false"
-      ></star-rating>
-      | {{ product.votes }}
-    </p>
+      <p class="price">{{ product.price }}€</p>
 
-    <p class="precio">{{ product.price }}€</p>
+      <button
+        class="button"
+        @click="addToCart()"
+        :disabled="!product.available"
+      >
+        ADD TO CART
+      </button>
+      <button class="button" @click="addToWishlist()">
+        ADD TO WISHLIST
+      </button>
 
-    <button class="button" @click="addToCart()" :disabled="!product.available">
-      ADD TO CART
-    </button>
-    <button class="button" @click="addToWishlist()">
-      ADD TO WISHLIST
-    </button>
+      <!-- REVIEWS -->
 
-    <!-- REVIEWS -->
+      <reviewcard v-if="reviews[0]" :reviews="reviews"></reviewcard>
+      <p v-else>No reviews to show.</p>
+      <!-- /REVIEWS -->
 
-    <reviewcard v-if="reviews[0]" :reviews="reviews"></reviewcard>
-    <p v-else>No reviews to show.</p>
-    <!-- /REVIEWS -->
-
-    <!-- RELATED PRODUCTS-->
-    <div class="productsList">
-      <p v-show="!products.length && !loading">No products to show.</p>
-      <productcard
-        v-for="product in products"
-        :key="product.id"
-        :product="product"
-      ></productcard>
+      <!-- RELATED PRODUCTS-->
+      <div class="productsList">
+        <p v-show="!products.length && !loading">No products to show.</p>
+        <productcard
+          v-for="product in products"
+          :key="product.id"
+          :product="product"
+        ></productcard>
+      </div>
+      <!-- /RELATED PRODUCTS-->
     </div>
-    <!-- /RELATED PRODUCTS-->
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->
@@ -237,5 +241,17 @@ export default {
 <style scoped>
 img {
   width: 500px;
+  margin: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 1rem;
+}
+
+.ratingStars {
+  margin: 1rem;
+}
+
+.price {
+  font-size: 2rem;
 }
 </style>

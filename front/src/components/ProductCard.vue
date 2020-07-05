@@ -54,7 +54,8 @@
           </div>
           <!-- /Color swatches -->
 
-          <h1>{{ product.name }}</h1>
+          <h2>{{ product.name }}</h2>
+          <p class="category">{{ product.category }}</p>
 
           <!-- Rating -->
           <p class="ratingStars">
@@ -119,9 +120,10 @@ export default {
   border-radius: 1rem;
   max-width: 800px;
   width: 15rem;
-  height: 20rem;
+  height: 21rem;
   margin-bottom: 2rem;
   padding: 1rem;
+  margin: 1rem;
   position: relative;
   background: var(--block-bg-color);
 
@@ -183,10 +185,9 @@ export default {
 /* /Availability dot */
 
 /* Product name */
-h1 {
+h2 {
   font-size: 1.1rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
+  margin: 0.5rem;
 }
 /* /Product name */
 
@@ -223,4 +224,13 @@ img.productImg {
   cursor: pointer;
 }
 /* /Delete button */
+
+.category {
+  font-size: 0.9rem;
+  margin: 0.5rem;
+}
+
+.ratingStars {
+  margin: 0.5rem;
+}
 </style>

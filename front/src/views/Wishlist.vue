@@ -9,43 +9,43 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
+    <div class="contentContainer">
+      <!-- Share link -->
+      <!-- Link must be in a shown input in order to use document.execCommand("copy");-->
+      <input id="shareLink" type="text" v-model="shareLink" />
+      <!-- /Share link -->
 
-    <!-- Share link -->
-    <!-- Link must be in a shown input in order to use document.execCommand("copy");-->
-    <input id="shareLink" type="text" v-model="shareLink" />
-    <!-- /Share link -->
+      <h2>
+        {{ userName }}'s whislist
+        <font-awesome-icon
+          v-show="isOwner"
+          @click="copyShareLink()"
+          icon="share"
+        />
+      </h2>
 
-    <h2>
-      {{ userName }}'s whislist
-      <font-awesome-icon
-        v-show="isOwner"
-        @click="copyShareLink()"
-        icon="share"
-      />
-    </h2>
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
 
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <!-- Product list -->
+      <div class="productsList">
+        <p v-show="!products.length && !loading">No products to show</p>
+        <productcard
+          v-for="(product, index) in products"
+          :key="product.id"
+          :product="product"
+          :showDelete="isOwner"
+          v-on:delete="deleteProduct(index)"
+        ></productcard>
+      </div>
+      <!-- /Product list -->
     </div>
-    <!-- /Spinner -->
-
-    <!-- Product list -->
-    <div class="productsList">
-      <p v-show="!products.length && !loading">No products to show</p>
-      <productcard
-        v-for="(product, index) in products"
-        :key="product.id"
-        :product="product"
-        :showDelete="isOwner"
-        v-on:delete="deleteProduct(index)"
-      ></productcard>
-    </div>
-    <!-- /Product list -->
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->

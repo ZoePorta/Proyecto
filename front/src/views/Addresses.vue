@@ -13,74 +13,116 @@
     <!-- /USER MENU -->
 
     <!-- CONTENT -->
-    <h2>
-      Your addresses
-      <font-awesome-icon class="icon" @click="openNewModal()" icon="plus" />
-    </h2>
+    <div class="contentContainer">
+      <h2>
+        Your addresses
+        <font-awesome-icon class="icon" @click="openNewModal()" icon="plus" />
+      </h2>
 
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
+
+      <!-- Address list -->
+      <p v-show="!addresses && !loading">No addresses to show</p>
+
+      <addresscard
+        :addresses="addresses"
+        :showDelete="true"
+        @delete="deleteAddress"
+        @edit="openEditModal"
+      ></addresscard>
+
+      <!-- /Address list -->
+
+      <!-- Address form -->
+      <div v-show="modal" class="modal">
+        <form class="modalBox">
+          <label for="alias">Alias:</label>
+          <input
+            type="text"
+            id="alias"
+            v-model="address.alias"
+            placeholder="Write the address alias here"
+          />
+
+          <label for="name ">Name:</label>
+          <input
+            type="text"
+            name="name"
+            v-model="address.name"
+            placeholder="Write the addresse's full name here"
+          />
+
+          <label for="row1">Row 1:</label>
+          <input
+            type="text"
+            name="row1"
+            v-model="address.row1"
+            placeholder="Write the address here (number, street...)"
+          />
+
+          <label for="row2">Row 2:</label>
+          <input
+            type="text"
+            name="row2"
+            v-model="address.row2"
+            placeholder="Write the address deatils here (floor, door...)"
+          />
+
+          <label for="city">City:</label>
+          <input
+            type="text"
+            name="city"
+            v-model="address.city"
+            placeholder="Write the city here"
+          />
+
+          <label for="PC">Postal Code:</label>
+          <input
+            type="number"
+            name="PC"
+            v-model="address.PC"
+            placeholder="Write the postal code here"
+          />
+
+          <label for="county">Country:</label>
+          <input
+            type="text"
+            name="country"
+            v-model="address.country"
+            placeholder="Write the contry here"
+          />
+
+          <label for="prefix">Prefix:</label>
+          <input
+            type="text"
+            name="prefix"
+            v-model="address.prefix"
+            placeholder="Write the phone prefix here"
+          />
+
+          <label for="phone_number">Phone Number::</label>
+          <input
+            type="number"
+            name="phone_number"
+            v-model="address.phone_number"
+            placeholder="Write the phone number here"
+          />
+
+          <div>
+            <button class="button" @click.prevent="closeModal()">Close</button>
+            <button class="button" @click.prevent="save()">Save</button>
+          </div>
+        </form>
+      </div>
+      <!-- /Address form -->
     </div>
-    <!-- /Spinner -->
-
-    <!-- Address list -->
-    <p v-show="!addresses && !loading">No addresses to show</p>
-
-    <addresscard
-      :addresses="addresses"
-      :showDelete="true"
-      @delete="deleteAddress"
-      @edit="openEditModal"
-    ></addresscard>
-
-    <!-- /Address list -->
-
-    <!-- Address form -->
-    <div v-show="modal" class="modal">
-      <form class="modalBox">
-        <label for="alias">Alias:</label>
-        <input type="text" id="alias" v-model="address.alias" />
-
-        <label for="name ">Name:</label>
-        <input type="text" name="name" v-model="address.name" />
-
-        <label for="row1">Row 1:</label>
-        <input type="text" name="row1" v-model="address.row1" />
-
-        <label for="row2">Row 2:</label>
-        <input type="text" name="row2" v-model="address.row2" />
-
-        <label for="city">City:</label>
-        <input type="text" name="city" v-model="address.city" />
-
-        <label for="PC">Postal Code:</label>
-        <input type="number" name="PC" v-model="address.PC" />
-
-        <label for="county">Country:</label>
-        <input type="text" name="country" v-model="address.country" />
-
-        <label for="prefix">Prefix:</label>
-        <input type="text" name="prefix" v-model="address.prefix" />
-
-        <label for="phone_number">Phone Number::</label>
-        <input
-          type="number"
-          name="phone_number"
-          v-model="address.phone_number"
-        />
-
-        <div>
-          <button class="button" @click.prevent="closeModal()">Close</button>
-          <button class="button" @click.prevent="save()">Save</button>
-        </div>
-      </form>
-    </div>
-    <!-- /Address form -->
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->

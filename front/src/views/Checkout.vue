@@ -9,24 +9,24 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
+    <div class="contentContainer">
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
 
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <!-- Address info -->
+      <h2>Shipping to...</h2>
+      <addresscard :addresses="[address]"></addresscard>
+
+      <!-- /Address info -->
+
+      <button class="button" @click="payOrder()">PAY {{ price }}€</button>
     </div>
-    <!-- /Spinner -->
-
-    <!-- Address info -->
-    <h2>Shipping to...</h2>
-    <addresscard :addresses="[address]"></addresscard>
-
-    <!-- /Address info -->
-
-    <button class="button" @click="payOrder()">PAY {{ price }}€</button>
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->

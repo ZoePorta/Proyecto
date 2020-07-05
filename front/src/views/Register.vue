@@ -9,60 +9,62 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
-    <h2>
-      Register 👇
-    </h2>
+    <div class="contentContainer">
+      <h2>
+        Register 👇
+      </h2>
 
-    <!-- FORM -->
-    <div class="form">
-      <p class="error" v-show="errorMessage">{{ errorMessage }}</p>
+      <!-- FORM -->
+      <div class="form">
+        <p class="error" v-show="errorMessage">{{ errorMessage }}</p>
 
-      <!-- Email -->
-      <label for="email">Email:</label>
-      <input
-        type="text"
-        name="email"
-        placeholder="Tu email..."
-        v-model="email"
-      />
-      <br />
+        <!-- Email -->
+        <label for="email">Email:</label>
+        <input
+          type="text"
+          name="email"
+          placeholder="Write your email"
+          v-model="email"
+        />
+        <br />
 
-      <!-- Password -->
-      <label for="password">Password:</label>
-      <input
-        type="password"
-        name="password"
-        min="6"
-        max="20"
-        placeholder="Password..."
-        v-model="password"
-      />
-      <br />
+        <!-- Password -->
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          name="password"
+          min="6"
+          max="20"
+          placeholder="Write your password"
+          v-model="password"
+        />
+        <br />
 
-      <!-- Repeat password -->
-      <label for="repeatPassword">Password repeat:</label>
-      <input
-        type="password"
-        name="repeatPassword"
-        placeholder="Contraseña..."
-        v-model="repeatPassword"
-      />
-      <br />
+        <!-- Repeat password -->
+        <label for="repeatPassword">Password repeat:</label>
+        <input
+          type="password"
+          name="repeatPassword"
+          placeholder="Repeat your password"
+          v-model="repeatPassword"
+        />
+        <br />
 
-      <!-- Birthdate -->
-      <label for="birthDate">Birthdate:</label>
-      <input
-        type="date"
-        name="birthDate"
-        v-model="birthDate"
-        :max="getMaxDate()"
-      />
+        <!-- Birthdate -->
+        <label for="birthDate">Birthdate:</label>
+        <input
+          placeholder="Set your brirthdate"
+          type="date"
+          name="birthDate"
+          v-model="birthDate"
+          :max="getMaxDate()"
+        />
 
-      <button class="button" @click.prevent="registerUser(email, password)">
-        REGISTER
-      </button>
+        <button class="button" @click.prevent="registerUser(email, password)">
+          REGISTER
+        </button>
+      </div>
     </div>
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->

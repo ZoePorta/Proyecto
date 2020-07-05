@@ -120,6 +120,7 @@ export default {
           icon: "success",
           title: "Add a comment",
           input: "text",
+          inputPlaceholder: "Write your opinion",
           showCancelButton: true,
 
           confirmButtonText: "Rate!",

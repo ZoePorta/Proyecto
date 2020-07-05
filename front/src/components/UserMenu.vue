@@ -17,7 +17,7 @@ export default {
 
 <style scoped>
 #menu {
-  width: 16rem;
+  width: 18rem;
   background: var(--block-bg-color);
   border-bottom: var(--border);
   box-shadow: var(--shadow);

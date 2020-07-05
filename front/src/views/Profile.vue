@@ -8,38 +8,70 @@
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- USER MENU -->
-    <usermenu></usermenu>
-    <!-- /USER MENU -->
-
     <!-- CONTENT -->
+    <div class="contentContainer">
+      <h1>Account</h1>
+      <p class="description">
+        Here you can edit your profile, manage your addresses and check and rate
+        your orders!
+      </p>
 
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <!-- USER MENU -->
+      <usermenu></usermenu>
+      <!-- /USER MENU -->
+
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
+
+      <form class="profile">
+        <img :src="user.photo" alt="Profile picture" />
+
+        <label for="first_name">First name:</label>
+        <input
+          name="first name"
+          placeholder="Write your first name"
+          type="text"
+          id="first_name"
+          v-model="user.first_name"
+        />
+
+        <label for="last_name">Last name:</label>
+        <input
+          name="last name"
+          placeholder="Write your last name"
+          type="text"
+          id="last_name"
+          v-model="user.last_name"
+        />
+
+        <label for="email">Email:</label>
+        <input
+          name="email"
+          type="text"
+          id="email"
+          v-model="user.email"
+          placeholder="Here goes your email"
+          disabled
+        />
+
+        <label for="birthDate">Birth date:</label>
+        <input
+          name="birthdate"
+          type="text"
+          id="birthDate"
+          v-model="formattedDate"
+          placeholder="Here goues your birthdate"
+          disabled
+        />
+        <button @click.prevent="saveChanges()">Save</button>
+      </form>
     </div>
-    <!-- /Spinner -->
-
-    <form class="profile">
-      <img :src="user.photo" alt="Profile picture" />
-
-      <label for="first_name">First name:</label>
-      <input type="text" id="first_name" v-model="user.first_name" />
-
-      <label for="last_name">Last name:</label>
-      <input type="text" id="last_name" v-model="user.last_name" />
-
-      <label for="email">Email:</label>
-      <input type="text" id="email" v-model="user.email" disabled />
-
-      <label for="birthDate">Birth date:</label>
-      <input type="text" id="birthDate" v-model="formattedDate" disabled />
-      <button @click.prevent="saveChanges()">Save</button>
-    </form>
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->

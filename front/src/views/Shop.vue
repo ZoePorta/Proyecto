@@ -9,33 +9,65 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
+    <div class="contentContainer">
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
 
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <h1>{{ shop.name }}</h1>
+
+      <!-- Social Media -->
+      <nav class="social">
+        <a
+          v-show="shop.twitter"
+          class="icon"
+          :href="shop.twitter"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><font-awesome-icon :icon="['fab', 'twitter']"
+        /></a>
+
+        <a
+          v-show="shop.facebook"
+          class="icon"
+          :href="shop.facebook"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><font-awesome-icon :icon="['fab', 'facebook']"
+        /></a>
+
+        <a
+          v-show="shop.instagram"
+          class="icon"
+          :href="shop.instagram"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><font-awesome-icon :icon="['fab', 'instagram']"
+        /></a>
+      </nav>
+      <!-- Social Media -->
+
+      <video :src="shop.video" autoplay loop width="500px">
+        Can not play.
+      </video>
+      <p>{{ shop.description }}</p>
+
+      <!-- Product list -->
+      <div class="productsList">
+        <p v-show="!products.length && !loading">No products to show</p>
+        <productcard
+          v-for="product in products"
+          :key="product.id"
+          :product="product"
+        ></productcard>
+      </div>
+      <!-- /Product list -->
     </div>
-    <!-- /Spinner -->
-
-    <h1>{{ shop.name }}</h1>
-    <video :src="shop.video" autoplay loop width="500px">
-      Can not play.
-    </video>
-    <p>{{ shop.description }}</p>
-
-    <!-- Product list -->
-    <div class="productsList">
-      <p v-show="!products.length && !loading">No products to show</p>
-      <productcard
-        v-for="product in products"
-        :key="product.id"
-        :product="product"
-      ></productcard>
-    </div>
-    <!-- /Product list -->
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->
@@ -79,6 +111,7 @@ export default {
         .get(process.env.VUE_APP_API_URL + "/shops/" + self.$route.params.id)
         //Success
         .then(function(response) {
+          console.log(response);
           self.shop = response.data.message;
           self.products = response.data.message.products;
           self.loading = false;
@@ -96,5 +129,14 @@ export default {
 <style scoped>
 h1 {
   margin-bottom: 1rem;
+}
+
+.social {
+  margin: 1rem;
+}
+
+.icon {
+  font-size: 1.5rem;
+  margin: 1rem;
 }
 </style>

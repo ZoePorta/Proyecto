@@ -9,21 +9,27 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
-    <h2>
-      Log In 👇
-    </h2>
+    <div class="contentContainer">
+      <h2>
+        Log In 👇
+      </h2>
 
-    <div class="form">
-      <input type="text" placeholder="Email" v-model="email" />
-      <input type="password" placeholder="Password" v-model="password" />
-      <button class="button" @click="login()" :disabled="!email || !password">
-        LOG IN
-      </button>
+      <div class="form">
+        <input type="text" placeholder="Write your email" v-model="email" />
+        <input
+          type="password"
+          placeholder="Write your password"
+          v-model="password"
+        />
+        <button class="button" @click="login()" :disabled="!email || !password">
+          LOG IN
+        </button>
 
-      <p>
-        Don't have an account?
-        <router-link :to="{ name: 'Register' }">Register!</router-link>
-      </p>
+        <p>
+          Don't have an account?
+          <router-link :to="{ name: 'Register' }">Register!</router-link>
+        </p>
+      </div>
     </div>
     <!-- /CONTENT -->
 

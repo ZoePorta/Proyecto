@@ -8,48 +8,48 @@
     <menucustom></menucustom>
     <!-- /MENU -->
 
-    <!-- USER MENU -->
-    <usermenu></usermenu>
-    <!-- /USER MENU -->
-
     <!-- CONTENT -->
+    <div class="contentContainer">
+      <!-- USER MENU -->
+      <usermenu></usermenu>
+      <!-- /USER MENU -->
 
-    <h2>Finished orders</h2>
+      <h2>Finished orders</h2>
 
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
+
+      <!-- Order list -->
+      <p v-show="!orders && !loading">No orders to show</p>
+
+      <table v-for="order in orders" :key="order.id">
+        <thead>
+          <tr>
+            <th>{{ new Date(order.sell_date).toLocaleString() }}</th>
+            <td>Shipped to {{ order.alias }}</td>
+            <td>Total price: {{ order.price }}€</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3">
+              <ordercard
+                v-for="product in order.products"
+                :key="product.id"
+                :product="product"
+              ></ordercard>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- /Order list -->
     </div>
-    <!-- /Spinner -->
-
-    <!-- Order list -->
-    <p v-show="!orders && !loading">No orders to show</p>
-
-    <table v-for="order in orders" :key="order.id">
-      <thead>
-        <tr>
-          <th>{{ new Date(order.sell_date).toLocaleString() }}</th>
-          <td>Shipped to {{ order.alias }}</td>
-          <td>Total price: {{ order.price }}€</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colspan="3">
-            <ordercard
-              v-for="product in order.products"
-              :key="product.id"
-              :product="product"
-            ></ordercard>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- /Order list -->
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->

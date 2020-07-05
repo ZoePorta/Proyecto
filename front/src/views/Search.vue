@@ -9,131 +9,140 @@
     <!-- /MENU -->
 
     <!-- CONTENT -->
-
-    <!-- Spinner -->
-    <div v-show="loading" class="lds-ellipsis">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <!-- /Spinner -->
-
-    <!-- Search form -->
-    <form>
-      <!-- By key words -->
-      <input
-        type="text"
-        placeholder="Crystal crown..."
-        v-model="search.words"
-      />
-
-      <!-- By category -->
-      <select name="category" id="category" v-model="search.category">
-        <option value>--Category--</option>
-        <option
-          v-for="category in categories"
-          :key="category.id"
-          :value="category.category"
-          >{{ category.category }}</option
-        >
-      </select>
-
-      <!-- By type -->
-      <select name="type" id="type" v-model="search.type">
-        <option value>-- Type --</option>
-        <option value="ready">Ready</option>
-        <option value="custom">Custom</option>
-      </select>
-
-      <!-- By availability -->
-      <input
-        type="checkbox"
-        id="available"
-        value="available"
-        v-model="search.available"
-      />
-      <label for="available">Available only</label>
-
-      <!-- By price -->
-      <p>
-        <!-- Min -->
-        {{ search.minPrice }}€<input
-          type="range"
-          id="minPrice"
-          name="minPrice"
-          :min="searchDefault.minPrice"
-          :max="searchDefault.maxPrice"
-          v-model="search.minPrice"
-        />
-
-        <!-- Max -->
-        <input
-          type="range"
-          id="maxPrice"
-          name="maxPrice"
-          :min="searchDefault.minPrice"
-          :max="searchDefault.maxPrice"
-          v-model="search.maxPrice"
-        />
-        {{ search.maxPrice }}€
+    <div class="contentContainer">
+      <h1>Explore products</h1>
+      <p class="description">
+        Filter by keywords, category, type, availability, price, rating and
+        color to find what you are looking for!
       </p>
+      <!-- Spinner -->
+      <div v-show="loading" class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- /Spinner -->
 
-      <!-- By rating -->
-      <star-rating
-        class="ratingStars"
-        :increment="0.5"
-        v-model="search.rating"
-        :show-rating="false"
-      ></star-rating>
+      <!-- Search form -->
+      <form>
+        <!-- By key words -->
+        <label for="words">
+          <input
+            type="text"
+            name="words"
+            placeholder="Type something..."
+            v-model="search.words"
+        /></label>
 
-      <!-- By color -->
-      <multiselect
-        class="option__container"
-        v-model="search.colors"
-        placeholder="Color..."
-        label="name"
-        track-by="name"
-        :multiple="true"
-        :options="colors"
-        :option-height="104"
-        :searchable="false"
-        :close-on-select="false"
-      >
-        <template slot="option" slot-scope="props">
-          <div
-            class="option__desc"
-            :style="{
-              background: props.option.color,
-            }"
+        <!-- By category -->
+        <select name="category" id="category" v-model="search.category">
+          <option value>--Category--</option>
+          <option
+            v-for="category in categories"
+            :key="category.id"
+            :value="category.category"
+            >{{ category.category }}</option
           >
-            <p
+        </select>
+
+        <!-- By type -->
+        <select name="type" id="type" v-model="search.type">
+          <option value>-- Type --</option>
+          <option value="ready">Ready</option>
+          <option value="custom">Custom</option>
+        </select>
+
+        <!-- By availability -->
+        <input
+          name="available"
+          placeholder="Check to show only available products"
+          type="checkbox"
+          id="available"
+          value="available"
+          v-model="search.available"
+        />
+        <label for="available">Available only</label>
+
+        <!-- By price -->
+        <p>
+          <!-- Min -->
+          {{ search.minPrice }}€<input
+            type="range"
+            id="minPrice"
+            name="minPrice"
+            :min="searchDefault.minPrice"
+            :max="searchDefault.maxPrice"
+            v-model="search.minPrice"
+          />
+
+          <!-- Max -->
+          <input
+            type="range"
+            id="maxPrice"
+            name="maxPrice"
+            :min="searchDefault.minPrice"
+            :max="searchDefault.maxPrice"
+            v-model="search.maxPrice"
+          />
+          {{ search.maxPrice }}€
+        </p>
+
+        <!-- By rating -->
+        <star-rating
+          class="ratingStars"
+          :increment="0.5"
+          v-model="search.rating"
+          :show-rating="false"
+        ></star-rating>
+
+        <!-- By color -->
+        <multiselect
+          class="option__container"
+          v-model="search.colors"
+          placeholder="Color..."
+          label="name"
+          track-by="name"
+          :multiple="true"
+          :options="colors"
+          :option-height="104"
+          :searchable="false"
+          :close-on-select="false"
+        >
+          <template slot="option" slot-scope="props">
+            <div
+              class="option__desc"
               :style="{
-                visibility:
-                  props.option.name === 'other' ? 'visible' : 'hidden',
+                background: props.option.color,
               }"
             >
-              ?
-            </p>
-          </div>
-        </template>
-      </multiselect>
-    </form>
+              <p
+                :style="{
+                  visibility:
+                    props.option.name === 'other' ? 'visible' : 'hidden',
+                }"
+              >
+                ?
+              </p>
+            </div>
+          </template>
+        </multiselect>
+      </form>
 
-    <!-- /Search form -->
-    <button @click="resetSearch()">CLEAR</button>
+      <!-- /Search form -->
+      <button class="button" @click="resetSearch()">CLEAR</button>
 
-    <!-- Product list -->
-    <div class="productsList">
-      <p v-show="!filterProducts.length && !loading">No products to show</p>
-      <productcard
-        v-for="product in filterProducts"
-        :key="product.id"
-        :product="product"
-      ></productcard>
+      <!-- Product list -->
+      <div class="productsList">
+        <p v-show="!filterProducts.length && !loading">No products to show</p>
+        <productcard
+          v-for="product in filterProducts"
+          :key="product.id"
+          :product="product"
+        ></productcard>
+      </div>
+      <!-- /Product list -->
     </div>
-    <!-- /Product list -->
-
     <!-- /CONTENT -->
 
     <!-- FOOTER -->
@@ -390,21 +399,13 @@ input {
 }
 
 /* Color selector */
-/* .option__container {
-  width: 10rem;
-  margin: auto;
-} */
-
-/* *.multiselect--active {
-  border: 1px solid var(--border-color);
-} */
 
 .option__desc {
   height: 2rem;
   width: 2rem;
 
   color: black;
-  border: 1px solid black;
+  border: 1px solid var(--text-color);
   margin: 0.2rem;
 
   border-radius: 0.5rem;

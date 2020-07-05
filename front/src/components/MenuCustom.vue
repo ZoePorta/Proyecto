@@ -21,14 +21,22 @@
         ><font-awesome-icon icon="user"
       /></router-link>
 
+      <router-link :to="{ name: 'About' }" class="icon"
+        ><font-awesome-icon icon="question-circle"
+      /></router-link>
+
       <button class="button" @click="logoutUser()">
         LOGOUT
       </button>
     </div>
     <!-- /Menu for logged users only -->
 
-    <!-- Menu for logged users only -->
+    <!-- Menu for not logged users only -->
     <div class="anon nav" v-else>
+      <router-link :to="{ name: 'About' }" class="icon"
+        ><font-awesome-icon icon="question-circle"
+      /></router-link>
+
       <router-link :to="{ name: 'Register' }" tag="button" class="button"
         >REGISTER</router-link
       >
@@ -104,6 +112,7 @@ export default {
   font-size: 3rem;
   display: inline;
   font-family: "Satisfy", cursive;
+  font-weight: bold;
 }
 
 #home img {
