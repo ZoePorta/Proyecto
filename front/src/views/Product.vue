@@ -18,13 +18,16 @@
         <div></div>
       </div>
       <!-- /Spinner -->
-
-      <h1>{{ product.name }}</h1>
-      <router-link :to="{ name: 'Shop', params: { id: product.shopId } }">
-        <h2>{{ product.shopName }}</h2></router-link
-      >
+      <div class="title">
+        <h1>{{ product.name }}</h1>
+        <router-link :to="{ name: 'Shop', params: { id: product.shopId } }">
+          <h2>{{ product.shopName }}</h2></router-link
+        >
+      </div>
       <figure>
         <img :src="product.photo" :alt="product.name" />
+      </figure>
+      <div class="info">
         <p class="description">{{ product.description }}</p>
         <p
           class="availability"
@@ -35,36 +38,38 @@
         >
           ● {{ !product.available ? "Not available" : product.type }}
         </p>
-      </figure>
 
-      <p class="ratingStars">
-        <star-rating
-          :rating="+product.avgRating || 0"
-          :increment="0.5"
-          :read-only="true"
-          :star-size="30"
-          :show-rating="false"
-        ></star-rating>
-        | {{ product.votes }}
-      </p>
+        <p class="ratingStars">
+          <image-rating
+            :src="icon"
+            :rating="+product.avgRating || 0"
+            :increment="0.5"
+            :read-only="true"
+            :item-size="30"
+            :show-rating="false"
+          ></image-rating>
+          | {{ product.votes }}
+        </p>
 
-      <p class="price">{{ product.price }}€</p>
+        <p class="price">{{ product.price }}€</p>
 
-      <button
-        class="button"
-        @click="addToCart()"
-        :disabled="!product.available"
-      >
-        ADD TO CART
-      </button>
-      <button class="button" @click="addToWishlist()">
-        ADD TO WISHLIST
-      </button>
-
+        <button
+          class="button"
+          @click="addToCart()"
+          :disabled="!product.available"
+        >
+          ADD TO CART
+        </button>
+        <button class="button" @click="addToWishlist()">
+          ADD TO WISHLIST
+        </button>
+      </div>
       <!-- REVIEWS -->
 
-      <reviewcard v-if="reviews[0]" :reviews="reviews"></reviewcard>
-      <p v-else>No reviews to show.</p>
+      <div class="reviews">
+        <reviewcard v-if="reviews[0]" :reviews="reviews"></reviewcard>
+        <p v-else>No reviews to show.</p>
+      </div>
       <!-- /REVIEWS -->
 
       <!-- RELATED PRODUCTS-->
@@ -118,6 +123,9 @@ export default {
 
       //Related products array
       products: [],
+
+      //Rating icon
+      icon: process.env.VUE_APP_ICON,
     };
   },
   methods: {
@@ -241,6 +249,7 @@ export default {
 <style scoped>
 img {
   width: 500px;
+  max-width: 90vw;
   margin: 1rem;
   border: var(--border);
   box-shadow: var(--shadow);
@@ -253,5 +262,35 @@ img {
 
 .price {
   font-size: 2rem;
+}
+
+@media (min-width: 1000px) {
+  .contentContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    grid-template-areas:
+      "img title"
+      "img info";
+  }
+
+  figure {
+    grid-area: img;
+  }
+
+  .title {
+    grid-area: title;
+    align-self: flex-end;
+  }
+
+  .info {
+    grid-area: info;
+    align-self: flex-start;
+  }
+
+  .productsList,
+  .reviews {
+    grid-column: span 2;
+  }
 }
 </style>

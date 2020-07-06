@@ -77,6 +77,7 @@ export default {
 table {
   background: var(--block-bg-color);
   width: 20rem;
+  max-width: 85vw;
 
   border: var(--border);
   display: inline-block;

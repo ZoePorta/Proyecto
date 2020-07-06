@@ -10,8 +10,14 @@ async function showCurrentOrder(req, res, next) {
 
     const [result] = await connection.query(
       `
-      SELECT pr.id, name, description, pr.price, category, available, type, color, photo, quantity, stock
-      FROM orders_products op LEFT JOIN orders o ON op.orders_id=o.id LEFT JOIN products pr ON op.products_id=pr.id WHERE o.users_id=? AND finished=0;
+      SELECT pr.id AS id, pr.name, shops_id, s.name AS shopName, category, pr.price, available, 
+    type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes
+      FROM orders_products op 
+      LEFT JOIN orders o ON op.orders_id=o.id 
+      LEFT JOIN products pr ON op.products_id=pr.id 
+    LEFT JOIN ratings r ON pr.id = r.products_id 
+          LEFT JOIN shops s ON shops_id = s.id
+      WHERE o.users_id=? AND finished=0 group by pr.id;
       `,
       [userId]
     );

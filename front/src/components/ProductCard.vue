@@ -55,17 +55,18 @@
           <!-- /Color swatches -->
 
           <h2>{{ product.name }}</h2>
-          <p class="category">{{ product.category }}</p>
+          <p class="shop">{{ product.shopName }}</p>
 
           <!-- Rating -->
           <p class="ratingStars">
-            <star-rating
+            <image-rating
+              :src="icon"
               :rating="+product.avgRating || 0"
               :increment="0.01"
               :read-only="true"
-              :star-size="20"
+              :item-size="25"
               :show-rating="false"
-            ></star-rating>
+            ></image-rating>
             | {{ product.votes }}
           </p>
           <!-- /Rating -->
@@ -97,6 +98,9 @@ export default {
       green: "#34d1bf",
 
       orange: "orange",
+
+      //Rating icon
+      icon: process.env.VUE_APP_ICON,
     };
   },
   methods: {
@@ -120,10 +124,10 @@ export default {
   border-radius: 1rem;
   max-width: 800px;
   width: 15rem;
-  height: 21rem;
+  height: 23rem;
+  margin: 0 1rem;
   margin-bottom: 2rem;
   padding: 1rem;
-  margin: 1rem;
   position: relative;
   background: var(--block-bg-color);
 
@@ -187,7 +191,8 @@ export default {
 /* Product name */
 h2 {
   font-size: 1.1rem;
-  margin: 0.5rem;
+  margin: 1rem;
+  padding: 0;
 }
 /* /Product name */
 
@@ -225,7 +230,7 @@ img.productImg {
 }
 /* /Delete button */
 
-.category {
+.shop {
   font-size: 0.9rem;
   margin: 0.5rem;
 }

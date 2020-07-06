@@ -3,9 +3,12 @@ import App from "./App.vue";
 import router from "./router";
 import vueHeadful from "vue-headful";
 import dotenv from "dotenv";
-import StarRating from "vue-star-rating";
+import { ImageRating } from "vue-rate-it";
 
 dotenv.config();
+
+Vue.component("vue-headful", vueHeadful);
+Vue.component("image-rating", ImageRating);
 
 /* Add auth header */
 import axios from "axios";
@@ -53,9 +56,6 @@ library.add(
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 /* /Font awesome icons */
-
-Vue.component("vue-headful", vueHeadful);
-Vue.component("star-rating", StarRating);
 
 Vue.config.productionTip = false;
 

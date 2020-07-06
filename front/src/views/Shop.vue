@@ -19,43 +19,44 @@
       </div>
       <!-- /Spinner -->
 
-      <h1>{{ shop.name }}</h1>
+      <div class="title">
+        <h1>{{ shop.name }}</h1>
 
-      <!-- Social Media -->
-      <nav class="social">
-        <a
-          v-show="shop.twitter"
-          class="icon"
-          :href="shop.twitter"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><font-awesome-icon :icon="['fab', 'twitter']"
-        /></a>
+        <!-- Social Media -->
+        <nav class="social">
+          <a
+            v-show="shop.twitter"
+            class="icon"
+            :href="shop.twitter"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><font-awesome-icon :icon="['fab', 'twitter']"
+          /></a>
 
-        <a
-          v-show="shop.facebook"
-          class="icon"
-          :href="shop.facebook"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><font-awesome-icon :icon="['fab', 'facebook']"
-        /></a>
+          <a
+            v-show="shop.facebook"
+            class="icon"
+            :href="shop.facebook"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><font-awesome-icon :icon="['fab', 'facebook']"
+          /></a>
 
-        <a
-          v-show="shop.instagram"
-          class="icon"
-          :href="shop.instagram"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><font-awesome-icon :icon="['fab', 'instagram']"
-        /></a>
-      </nav>
-      <!-- Social Media -->
-
-      <video :src="shop.video" autoplay loop width="500px">
+          <a
+            v-show="shop.instagram"
+            class="icon"
+            :href="shop.instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><font-awesome-icon :icon="['fab', 'instagram']"
+          /></a>
+        </nav>
+        <!-- Social Media -->
+      </div>
+      <video :src="shop.video" autoplay loop>
         Can not play.
       </video>
-      <p>{{ shop.description }}</p>
+      <p class="description">{{ shop.description }}</p>
 
       <!-- Product list -->
       <div class="productsList">
@@ -138,5 +139,40 @@ h1 {
 .icon {
   font-size: 1.5rem;
   margin: 1rem;
+}
+
+video {
+  width: 500px;
+  max-width: 90vw;
+}
+
+@media (min-width: 1000px) {
+  .contentContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+    grid-template-areas:
+      "title video"
+      "info video";
+  }
+
+  video {
+    grid-area: video;
+  }
+
+  .title {
+    grid-area: title;
+    align-self: flex-end;
+  }
+
+  .description {
+    grid-area: info;
+    align-self: flex-start;
+  }
+
+  .productsList {
+    grid-column: span 2;
+  }
 }
 </style>

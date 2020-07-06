@@ -18,7 +18,7 @@ export default {
   --block-bg-color: #ffffff;
   --text-color: #272343;
   --enf-bg-color: #80ced0;
-  --link-color: #009a95;
+  --link-color: #009a95ff;
   --border: 1px solid #80ced0;
   --shadow: 2px 2px 5px #80ced075, -2px -2px 5px #80ced075;
   --title-font: "Galada", cursive;
@@ -41,6 +41,7 @@ h1 {
 h2 {
   margin: 1rem;
   font-family: var(--subtitle-font);
+  padding: 0;
 }
 
 .description {
@@ -64,6 +65,7 @@ li.multiselect__element {
   color: var(--text-color);
   background: var(--main-bg-color);
   min-height: 100vh;
+  max-width: 100vw;
 }
 
 a {
@@ -86,35 +88,38 @@ a {
   margin: 1rem;
 }
 
+.ratingStars div {
+  display: flex !important;
+}
+
 .button {
   padding: 0.2rem 0.5rem;
   margin: 1rem;
-  background: rgb(2, 64, 74);
+  background: rgb(30, 197, 189);
   background: linear-gradient(
     0deg,
-    rgba(2, 64, 74, 1) 0%,
-    rgba(18, 172, 187, 1) 100%
+    rgba(0, 90, 87, 1) 0%,
+    rgba(30, 197, 189, 1) 100%
   );
   font-weight: bold;
   color: #fff;
   cursor: pointer;
   border: var(--border);
-  box-shadow: var(--shador);
   border-radius: 3px;
 }
 
 .button:disabled {
   cursor: initial;
-  background: #6caeb1b7;
+  background: #95cbc9ff;
 }
 
 button:active {
   background: var(--text-color);
-  background: rgb(2, 64, 74);
+  background: rgb(0, 90, 87);
   background: linear-gradient(
-    0deg,
-    rgba(18, 172, 187, 1) 0%,
-    rgba(2, 64, 74, 1) 100%
+    180deg,
+    rgba(0, 90, 87, 1) 0%,
+    rgba(30, 197, 189, 1) 100%
   );
 }
 

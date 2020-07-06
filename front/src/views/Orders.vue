@@ -28,26 +28,20 @@
       <!-- Order list -->
       <p v-show="!orders && !loading">No orders to show</p>
 
-      <table v-for="order in orders" :key="order.id">
-        <thead>
-          <tr>
-            <th>{{ new Date(order.sell_date).toLocaleString() }}</th>
-            <td>Shipped to {{ order.alias }}</td>
-            <td>Total price: {{ order.price }}€</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="3">
-              <ordercard
-                v-for="product in order.products"
-                :key="product.id"
-                :product="product"
-              ></ordercard>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="order" v-for="order in orders" :key="order.id">
+        <div class="header">
+          <p>
+            <strong>{{ new Date(order.sell_date).toLocaleString() }}</strong>
+          </p>
+          <p>Shipped to {{ order.alias }}</p>
+          <p>Total price: {{ order.price }}€</p>
+        </div>
+        <ordercard
+          v-for="product in order.products"
+          :key="product.id"
+          :product="product"
+        ></ordercard>
+      </div>
       <!-- /Order list -->
     </div>
     <!-- /CONTENT -->
@@ -128,8 +122,8 @@ export default {
 </script>
 
 <style scoped>
-table {
-  width: 90%;
+.order {
+  width: 90vw;
   max-width: 800px;
   margin: 1.5rem auto;
   border: var(--border);
@@ -137,5 +131,17 @@ table {
   border-radius: 1rem;
   padding: 1rem;
   background: var(--enf-bg-color);
+}
+
+.header {
+  width: 100%;
+  justify-content: space-evenly;
+  display: flex;
+}
+
+@media (max-width: 800px) {
+  .header {
+    flex-direction: column;
+  }
 }
 </style>

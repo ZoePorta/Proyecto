@@ -1,37 +1,33 @@
 <template>
   <div class="ordercard">
-    <table>
-      <tbody>
-        <tr>
-          <td>
-            <router-link
-              :to="{ name: 'Product', params: { id: product.productId } }"
-            >
-              <figure><img :src="product.photo" alt="" /></figure
-            ></router-link>
-          </td>
-          <td>
-            <router-link
-              :to="{ name: 'Product', params: { id: product.productId } }"
-              tag="h1"
-              >{{ product.name }}</router-link
-            >
-            <p>{{ product.price }}€ x {{ product.quantity }}</p>
-            <h2>{{ (product.price * product.quantity).toFixed(2) }}€</h2>
-          </td>
-          <td>
-            <p>Rate it!</p>
-            <star-rating
-              class="ratingStars"
-              :increment="0.5"
-              :star-size="30"
-              v-model="rating"
-              :show-rating="false"
-            ></star-rating>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <router-link
+      class="img"
+      tag="figure"
+      :to="{ name: 'Product', params: { id: product.productId } }"
+    >
+      <img :src="product.photo" :alt="product.name"
+    /></router-link>
+    <router-link
+      class="name"
+      :to="{ name: 'Product', params: { id: product.productId } }"
+      tag="h1"
+      >{{ product.name }}</router-link
+    >
+    <div class="info">
+      <p>{{ product.price }}€ x {{ product.quantity }}</p>
+      <h2>{{ (product.price * product.quantity).toFixed(2) }}€</h2>
+    </div>
+    <div class="rate">
+      <p>Rate it!</p>
+      <image-rating
+        :src="icon"
+        class="ratingStars"
+        :increment="0.5"
+        :item-size="30"
+        v-model="rating"
+        :show-rating="false"
+      ></image-rating>
+    </div>
   </div>
 </template>
 
@@ -62,6 +58,9 @@ export default {
         "/products/" +
         this.product.productId +
         "/rate",
+
+      //Rating icon
+      icon: process.env.VUE_APP_ICON,
     };
   },
 
@@ -155,23 +154,21 @@ export default {
 </script>
 
 <style scoped>
-table {
+.ordercard {
   background: var(--block-bg-color);
-  width: 100%;
 
   padding: 1rem;
   border: var(--border);
   border-radius: 1rem;
   margin: 1rem auto;
-}
 
-table {
-}
-tr {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
   justify-content: center;
+  grid-template-areas:
+    "img name rate"
+    "img info rate";
 }
 
 h1 {
@@ -180,7 +177,7 @@ h1 {
 
 figure {
   width: 100%;
-  min-width: 10rem;
+  /*   min-width: 10rem; */
 
   height: 15rem;
   overflow: hidden;
@@ -191,5 +188,36 @@ img {
   height: 100%;
   object-fit: cover;
   border-radius: 1rem;
+}
+
+.name {
+  grid-area: name;
+}
+
+.img {
+  grid-area: img;
+  height: 10rem;
+}
+
+.info {
+  grid-area: info;
+}
+
+.rate {
+  grid-area: rate;
+}
+
+@media (max-width: 800px) {
+  .ordercard {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "name"
+      "img "
+      "info"
+      "rate ";
+    align-items: center;
+    justify-items: center;
+  }
 }
 </style>

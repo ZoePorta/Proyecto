@@ -307,6 +307,10 @@ table {
   background: var(--enf-bg-color);
 }
 
+h2 {
+  padding: 0;
+}
+
 .modal {
   position: fixed;
   top: 0;
@@ -337,5 +341,28 @@ table {
 
 .icon {
   cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  .modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modalBox {
+    margin: 0;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    padding-top: 1rem;
+  }
+
+  input {
+    height: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modalBox .button {
+    margin: 0.5rem;
+  }
 }
 </style>

@@ -10,9 +10,50 @@
 
     <!-- CONTENT -->
     <div class="contentContainer">
+      <h1>About</h1>
       <figure>
-        <img src="../assets/404.svg" alt="Error 404: Page not found." />
+        <img src="../assets/fotoZoe.jpg" alt="Zoe Porta" />
       </figure>
+      <div class="description">
+        <p>
+          This site was created by
+          <a
+            href="https://www.linkedin.com/in/zoeporta/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Zoe Porta</a
+          >
+          as the final proyect for
+          <a
+            href="https://hackaboss.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >HACK A BOSS</a
+          >
+          coding bootcamp,
+        </p>
+        <p>
+          using
+          <a href="https://vuejs.org/" target="_blank" rel="noopener noreferrer"
+            >Vue</a
+          >
+          for the frontend,
+          <a
+            href="https://nodejs.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Node</a
+          >
+          for the backend and
+          <a
+            href="https://www.mysql.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >MySQL</a
+          >
+          for the database.
+        </p>
+      </div>
     </div>
     <!-- /CONTENT -->
 
@@ -42,9 +83,10 @@ export default {
 
 <style scoped>
 img {
-  width: 90%;
-  min-width: 10rem;
-  max-width: 800px;
-  max-height: 70vh;
+  width: 20rem;
+  max-width: 80vw;
+  border-radius: 50%;
+  border: var(--border);
+  box-shadow: var(--shadow);
 }
 </style>

@@ -6,13 +6,14 @@
         <tr>
           <th>
             <!-- stars -->
-            <star-rating
+            <image-rating
+              :src="icon"
               :rating="+review.rating"
               :increment="0.01"
               :read-only="true"
-              :star-size="20"
+              :item-size="20"
               :show-rating="false"
-            ></star-rating>
+            ></image-rating>
             <!-- /starts -->
           </th>
         </tr>
@@ -33,6 +34,12 @@ export default {
   name: "ReviewCard",
   props: {
     reviews: Array,
+  },
+  data() {
+    return {
+      //Rating icon
+      icon: process.env.VUE_APP_ICON,
+    };
   },
 };
 </script>

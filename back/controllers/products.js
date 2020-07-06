@@ -41,7 +41,11 @@ async function getProduct(req, res, next) {
     const { category } = product;
     const [relatedProducts] = await connection.query(
       `
-    SELECT pr.id, name, category, price, available, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE AVAILABLE=1 AND category=? AND NOT pr.id=? group by pr.id 
+    SELECT pr.id, pr.name, s.name AS shopName, category, price, available, type, 
+    photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr 
+    LEFT JOIN ratings r ON pr.id = r.products_id 
+        LEFT JOIN shops s ON shops_id = s.id
+    WHERE AVAILABLE=1 AND category=? AND NOT pr.id=? group by pr.id 
     `,
       [category, productId]
     );
@@ -263,7 +267,12 @@ async function listProducts(req, res, next) {
     connection = await getConnection();
     let [result] = await connection.query(
       `
-    SELECT pr.id, name, description, price, available, category, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr LEFT JOIN ratings r ON pr.id = r.products_id group by pr.id
+    SELECT pr.id, pr.name, s.name AS shopName, pr.description, price, available, 
+    category, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes 
+    from products pr 
+    LEFT JOIN ratings r ON pr.id = r.products_id 
+        LEFT JOIN shops s ON shops_id = s.id
+    group by pr.id
     `
     );
 

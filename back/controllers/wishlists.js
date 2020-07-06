@@ -10,7 +10,13 @@ async function listWishlist(req, res, next) {
 
     const [result] = await connection.query(
       `
-    SELECT pr.id AS id, name, category, price, available, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from wishlists w LEFT JOIN products pr ON w.products_id = pr.id LEFT JOIN ratings r ON pr.id = r.products_id WHERE w.users_id=? group by pr.id
+    SELECT pr.id AS id, pr.name, shops_id, s.name AS shopName, category, price, available, 
+    type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes 
+    from wishlists w 
+    LEFT JOIN products pr ON w.products_id = pr.id 
+    LEFT JOIN ratings r ON pr.id = r.products_id 
+    LEFT JOIN shops s ON shops_id = s.id
+    WHERE w.users_id=? group by pr.id
     `,
       [userId]
     );

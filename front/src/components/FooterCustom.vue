@@ -1,6 +1,14 @@
 <template>
   <div class="footer">
-    <p>Zoe Porta - 2020</p>
+    <p>
+      <a
+        href="https://www.linkedin.com/in/zoeporta/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Zoe Porta</a
+      >
+      - 2020
+    </p>
   </div>
 </template>
 

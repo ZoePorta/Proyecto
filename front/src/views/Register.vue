@@ -211,10 +211,6 @@ export default {
 </script>
 
 <style scoped>
-h2 {
-  padding: 2rem;
-}
-
 /* Mensaje de error */
 p {
   color: #d1345b;

@@ -1,11 +1,9 @@
 <template>
   <div id="menu">
-    <div>
-      <router-link id="home" :to="{ name: 'Home' }"
-        ><img src="../assets/origami.svg" alt="Crafty logo" />
-        <h1>Crafty</h1></router-link
-      >
-    </div>
+    <router-link id="home" :to="{ name: 'Home' }"
+      ><img src="../assets/origami.svg" alt="Crafty logo" />
+      <h1>Crafty</h1></router-link
+    >
 
     <!-- Menu for logged users only -->
     <div class="user nav" v-if="logged">
@@ -93,19 +91,25 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Satisfy&display=swap");
 
 #menu {
-  width: 100%;
+  width: 100vw;
   background: var(--block-bg-color);
   border-bottom: var(--border);
   box-shadow: var(--shadow);
   margin-bottom: 2rem;
   display: grid;
-  grid-template-columns: 20rem 1fr 20rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "logo search nav"
+    "logo search nav"
+    "logo search nav";
 }
 
 #home {
   display: flex;
   align-items: center;
-  padding: 1rem;
+  margin: 1rem;
+  grid-area: logo;
+  max-width: 100vw;
 }
 
 #home h1 {
@@ -125,10 +129,12 @@ a {
 }
 
 .nav {
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
   font-size: 1.2rem;
+  margin: 1rem;
+  grid-area: nav;
+  display: flex;
+  height: min-content;
+  justify-self: end;
 }
 
 .nav button {
@@ -145,11 +151,12 @@ a {
   border-radius: 5px;
   overflow: hidden;
   display: flex;
-  width: 15rem;
+  max-width: 15rem;
   height: 2rem;
-  align-self: center;
+  align-self: flex-end;
   justify-self: center;
-  margin-top: 2rem;
+  margin-bottom: 2rem;
+  grid-area: search;
 }
 .search button,
 input {
@@ -162,5 +169,29 @@ input {
   height: 100%;
   flex-grow: 1;
   padding: 0.5rem;
+}
+
+@media (max-width: 800px) {
+  #menu {
+    grid-template-areas:
+      "nav nav nav"
+      "logo logo logo"
+      "search search search";
+    justify-content: center;
+  }
+
+  #home {
+    justify-content: center;
+    margin: 0;
+  }
+
+  .button {
+    margin-right: 0;
+  }
+
+  .nav {
+    justify-self: center;
+    margin-bottom: 0;
+  }
 }
 </style>

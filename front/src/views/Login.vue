@@ -142,10 +142,6 @@ export default {
 </script>
 
 <style scooped>
-h2 {
-  padding: 2rem;
-}
-
 .form {
   padding: 2rem;
   width: 80%;

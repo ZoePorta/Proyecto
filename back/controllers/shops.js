@@ -17,7 +17,11 @@ async function getShop(req, res, next) {
 
     const [products] = await connection.query(
       `
-    SELECT pr.id, name, price, available, category, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE shops_id=? group by pr.id
+    SELECT pr.id, pr.name, s.name AS shopName, price, available, category, type, 
+    photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr 
+    LEFT JOIN ratings r ON pr.id = r.products_id 
+        LEFT JOIN shops s ON shops_id = s.id
+    WHERE shops_id=? group by pr.id
     `,
       [shopId]
     );

@@ -1,5 +1,10 @@
 <template>
   <div id="menu">
+    <h1>Account</h1>
+    <p class="description">
+      Here you can edit your profile, manage your addresses and check and rate
+      your orders!
+    </p>
     <div id="nav">
       <router-link :to="{ name: 'Profile' }">Profile</router-link> ●
 
@@ -16,7 +21,7 @@ export default {
 </script>
 
 <style scoped>
-#menu {
+#nav {
   width: 18rem;
   background: var(--block-bg-color);
   border-bottom: var(--border);

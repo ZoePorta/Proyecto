@@ -136,17 +136,24 @@ export default {
 <style scoped>
 .shop {
   background: var(--block-bg-color);
-  width: min-content;
-  padding: 1rem 2rem;
+
+  width: 90vw;
+  max-width: 600px;
+  padding: 1rem;
   border: var(--border);
   box-shadow: var(--shadow);
   border-radius: 1rem;
-  margin: auto;
+  margin: 1rem auto;
+}
+
+video {
+  width: 100%;
 }
 
 .shop h2 {
   display: inline-block;
   margin-left: 0;
+  padding: 0;
 }
 
 @media (min-width: 1000px) {

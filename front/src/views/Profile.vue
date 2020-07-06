@@ -10,12 +10,6 @@
 
     <!-- CONTENT -->
     <div class="contentContainer">
-      <h1>Account</h1>
-      <p class="description">
-        Here you can edit your profile, manage your addresses and check and rate
-        your orders!
-      </p>
-
       <!-- USER MENU -->
       <usermenu></usermenu>
       <!-- /USER MENU -->
@@ -69,7 +63,7 @@
           placeholder="Here goues your birthdate"
           disabled
         />
-        <button @click.prevent="saveChanges()">Save</button>
+        <button class="button" @click.prevent="saveChanges()">Save</button>
       </form>
     </div>
     <!-- /CONTENT -->
@@ -172,6 +166,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  min-width: 300px;
   width: 50%;
   margin: auto;
   border-radius: 1rem;
@@ -181,5 +176,6 @@ img {
   border-radius: 50%;
   border: var(--border);
   box-shadow: var(--shadow);
+  margin: 1rem;
 }
 </style>

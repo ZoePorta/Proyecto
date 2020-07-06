@@ -37,7 +37,7 @@
 
         <!-- Addresses -->
 
-        <table class="adresses">
+        <table class="addresses">
           <thead>
             <tr>
               <th>
@@ -65,7 +65,7 @@
         :to="{ name: 'Checkout', params: { addressId } }"
         tag="button"
         class="button"
-        :disabled="!checkAvailability"
+        :disabled="!checkAvailability || !products[0]"
         >CHECKOUT</router-link
       >
       <!-- /Checkout button -->
@@ -175,7 +175,19 @@ export default {
 <style scoped>
 .container {
   display: grid;
-  grid-template-columns: 1fr 15rem;
+  grid-template-columns: 1fr 20rem;
+  grid-template-areas: "products addresses";
+  justify-items: center;
+}
+
+.productsList {
+  grid-area: products;
+}
+
+.addresses {
+  grid-area: addresses;
+  width: 100%;
+  max-width: 90vw;
 }
 
 table {
@@ -199,5 +211,21 @@ tbody {
 tr.selected {
   background: var(--main-bg-color);
   font-weight: bold;
+}
+
+@media (max-width: 1000px) {
+  .container {
+    grid-template-areas:
+      "products products"
+      "addresses addresses";
+  }
+
+  table {
+    margin: 0;
+  }
+
+  .productsList {
+    margin: 0;
+  }
 }
 </style>

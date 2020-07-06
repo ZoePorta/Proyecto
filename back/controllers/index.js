@@ -43,7 +43,12 @@ async function getProducts(quantity) {
 
     const [results] = await connection.query(
       `
-    SELECT pr.id, name, category, price, available, type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes from products pr LEFT JOIN ratings r ON pr.id = r.products_id WHERE AVAILABLE=1 group by pr.id
+    SELECT pr.id, pr.name, s.name AS shopName, category, price, available, 
+    type, photo, color, avg(rating) AS avgRating, COUNT(rating) AS votes 
+    from products pr 
+    LEFT JOIN ratings r ON pr.id = r.products_id 
+        LEFT JOIN shops s ON shops_id = s.id
+    WHERE AVAILABLE=1 group by pr.id
     `
     );
 
