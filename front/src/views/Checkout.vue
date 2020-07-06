@@ -98,6 +98,8 @@ export default {
             text: "You will receive a confirmation email.",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           }).then((result) => {
             //Go to Home
 

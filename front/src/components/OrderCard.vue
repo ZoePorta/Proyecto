@@ -81,6 +81,8 @@ export default {
             text: `You have rated ${self.product.name} with ${self.rating}/5!`,
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           });
         })
         //Error
@@ -103,6 +105,8 @@ export default {
             text: `You changed ${self.product.name} rating to ${self.rating}/5!`,
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           });
         })
         //Error
@@ -123,6 +127,8 @@ export default {
           showCancelButton: true,
 
           confirmButtonText: "Rate!",
+
+          buttonsStyling: false,
         }).then((result) => {
           //User press save
           if (result.isConfirmed) {

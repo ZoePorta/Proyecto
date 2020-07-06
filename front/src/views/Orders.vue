@@ -62,7 +62,6 @@ import usermenu from "@/components/UserMenu.vue";
 
 //Importing library
 import axios from "axios";
-import Swal from "sweetalert2";
 
 export default {
   name: "Orders",
@@ -90,26 +89,6 @@ export default {
           self.orders = response.data.result;
 
           self.loading = false;
-        })
-        //Error
-        .catch((error) => console.log(error));
-    },
-
-    //Function to remove item from order
-    deleteProduct(index) {
-      const productId = this.products[index].id;
-      axios
-        .delete(process.env.VUE_APP_API_URL + "/wishlist/" + productId)
-        //Success: confirmation modal
-        .then(function(response) {
-          Swal.fire({
-            icon: "success",
-            title: "Product removed",
-
-            confirmButtonText: "Ok",
-          }).then((result) => {
-            location.reload();
-          });
         })
         //Error
         .catch((error) => console.log(error));

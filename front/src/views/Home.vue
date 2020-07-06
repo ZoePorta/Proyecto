@@ -89,7 +89,6 @@ import productcard from "@/components/ProductCard.vue";
 
 //Importing library
 import axios from "axios";
-import Swal from "sweetalert2";
 
 export default {
   name: "Home",

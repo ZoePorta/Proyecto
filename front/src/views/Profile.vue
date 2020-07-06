@@ -142,6 +142,8 @@ export default {
             title: "Profile updated",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           }).then((result) => {
             location.reload();
           });

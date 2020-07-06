@@ -76,13 +76,16 @@ export default {
         //Error: show error modals
         console.log(error);
 
-        if (error.response.status === 401) {
-          //Wrong user or password error
+        if (error.response.status === 500) {
+          //Unknown error
           Swal.fire({
             icon: "error",
-            title: "Wrong email or password.",
+            title: "Server error",
+            text: "Try again later.",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           });
         } else if (error.response.status === 403) {
           //Account not verified error
@@ -96,19 +99,22 @@ export default {
             showCancelButton: true,
             cancelButtonText: "Ok",
             confirmButtonText: "Resend email",
+
+            buttonsStyling: false,
           }).then((result) => {
             if (result.value) {
               this.resendMail();
             }
           });
         } else {
-          //Unknown error
+          //Wrong user or password error
           Swal.fire({
             icon: "error",
-            title: "Server error",
-            text: "Try again later.",
+            title: "Wrong email or password.",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           });
         }
       }
@@ -129,6 +135,8 @@ export default {
             title: "Email sent.",
             text: "Please, check your spam folder.",
             confirmButtonText: "Go to Home",
+
+            buttonsStyling: false,
           }).then(
             //Go back
 

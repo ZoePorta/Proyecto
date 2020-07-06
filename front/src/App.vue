@@ -92,7 +92,8 @@ a {
   display: flex !important;
 }
 
-.button {
+/* Buttons */
+button {
   padding: 0.2rem 0.5rem;
   margin: 1rem;
   background: rgb(30, 197, 189);
@@ -108,7 +109,7 @@ a {
   border-radius: 3px;
 }
 
-.button:disabled {
+button:disabled {
   cursor: initial;
   background: #95cbc9ff;
 }
@@ -126,6 +127,36 @@ button:active {
 button:focus {
   outline: none;
 }
+
+/* Swal cancel button */
+
+.swal2-cancel {
+  padding: 0.2rem 0.5rem;
+  margin: 1rem;
+  background: rgb(109, 153, 151);
+  background: linear-gradient(
+    0deg,
+    rgb(37, 71, 70) 0%,
+    rgb(109, 153, 151) 100%
+  );
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  border: var(--border);
+  border-radius: 3px;
+}
+
+.swal2-cancel:active {
+  background: var(--text-color);
+  background: rgb(37, 71, 70);
+  background: linear-gradient(
+    180deg,
+    rgb(37, 71, 70) 0%,
+    rgb(109, 153, 151) 100%
+  );
+}
+
+/* /Buttons */
 
 video {
   border-radius: 1rem;

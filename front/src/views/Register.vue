@@ -142,6 +142,8 @@ export default {
               text:
                 "We've sent you a verification email. Please check your spam folder.",
               confirmButtonText: "BACK",
+
+              buttonsStyling: false,
             }).then(
               //Go back
               (result) => self.$router.go(-1)
@@ -159,6 +161,8 @@ export default {
                 text: "That email is already registered.",
 
                 confirmButtonText: "Ok",
+
+                buttonsStyling: false,
               });
             } else if (error.response.status === 400) {
               //Invalid mail error
@@ -168,6 +172,8 @@ export default {
                 text: "Please, enter a valid email.",
 
                 confirmButtonText: "Ok",
+
+                buttonsStyling: false,
               });
             } else {
               //Unknown error
@@ -177,6 +183,8 @@ export default {
                 text: "Try again later.",
 
                 confirmButtonText: "Ok",
+
+                buttonsStyling: false,
               });
             }
           });

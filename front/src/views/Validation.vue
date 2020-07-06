@@ -49,6 +49,8 @@ export default {
             title: "Account verified",
             text: "You can login now.",
             confirmButtonText: "Go to login",
+
+            buttonsStyling: false,
           }).then(
             //Go to login page
             (result) => self.$router.push("/login")
@@ -63,6 +65,8 @@ export default {
             text: "Try again later.",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           }).then(
             //Go to index page
             (result) => self.$router.push("/")

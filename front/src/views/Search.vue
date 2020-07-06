@@ -89,12 +89,13 @@
         </p>
 
         <!-- By rating -->
-        <star-rating
+        <image-rating
+          :src="icon"
           class="ratingStars"
           :increment="0.5"
           v-model="search.rating"
           :show-rating="false"
-        ></star-rating>
+        ></image-rating>
 
         <!-- By color -->
         <multiselect
@@ -180,6 +181,9 @@ export default {
 
       //Category list
       categories: [],
+
+      //Rating icon
+      icon: process.env.VUE_APP_ICON,
 
       //Possible colors array
       colors: [

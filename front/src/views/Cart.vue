@@ -147,6 +147,8 @@ export default {
             title: "Product removed",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           }).then((result) => {
             location.reload();
           });

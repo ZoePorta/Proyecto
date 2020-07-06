@@ -41,8 +41,8 @@
       <!-- /Address list -->
 
       <!-- Address form -->
-      <div v-show="modal" class="modal">
-        <form class="modalBox">
+      <div v-show="modal" class="modal animate__animated animate__fadeIn">
+        <form class="modalBox animate__animated animate__fadeInDown">
           <label for="alias">Alias:</label>
           <input
             type="text"
@@ -142,6 +142,7 @@ import usermenu from "@/components/UserMenu.vue";
 //Importing library
 import axios from "axios";
 import Swal from "sweetalert2";
+import "animate.css";
 
 export default {
   name: "Addresses",
@@ -195,6 +196,8 @@ export default {
             title: "Address removed",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           }).then((result) => {
             location.reload();
           });
@@ -221,6 +224,8 @@ export default {
             title: "Address updated",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           }).then((result) => {
             location.reload();
           });
@@ -244,6 +249,8 @@ export default {
             title: "Address added",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           }).then((result) => {
             location.reload();
           });

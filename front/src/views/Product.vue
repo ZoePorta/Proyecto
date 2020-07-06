@@ -31,9 +31,12 @@
         <p class="description">{{ product.description }}</p>
         <p
           class="availability"
-          :class="{
-            green: product.available,
-            red: !product.available,
+          :style="{
+            color: !product.available
+              ? red
+              : product.type === 'ready'
+              ? green
+              : orange,
           }"
         >
           ● {{ !product.available ? "Not available" : product.type }}
@@ -124,6 +127,12 @@ export default {
       //Related products array
       products: [],
 
+      /* Availability colors */
+      red: "#d1345b",
+      green: "#34d1bf",
+
+      orange: "orange",
+
       //Rating icon
       icon: process.env.VUE_APP_ICON,
     };
@@ -164,6 +173,8 @@ export default {
             cancelButtonText: "Seguir comprando",
 
             confirmButtonText: "Shopping cart",
+
+            buttonsStyling: false,
           }).then((result) => {
             //Go to shopping cart
             if (result.value) {
@@ -195,6 +206,8 @@ export default {
             title: "Product added to your wishlist",
 
             confirmButtonText: "Ok",
+
+            buttonsStyling: false,
           });
         })
         .catch((error) => {
@@ -207,6 +220,8 @@ export default {
               title: "Product already in your wishlist",
 
               confirmButtonText: "Ok",
+
+              buttonsStyling: false,
             });
           } else if (error.response.status === 401) {
             //User not logged error
@@ -226,6 +241,8 @@ export default {
         cancelButtonText: "Later...",
 
         confirmButtonText: "Login now",
+
+        buttonsStyling: false,
       }).then((result) => {
         //Go to login
         if (result.value) {
