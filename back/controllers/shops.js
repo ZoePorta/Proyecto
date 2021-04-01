@@ -49,8 +49,6 @@ async function getShop(req, res, next) {
 
     if (video) {
       payload.video = video;
-    } else {
-      /////CODIGO PARA SUSTITUIR EL VIDEO POR IMAGENES//////
     }
 
     res.send({
@@ -74,9 +72,17 @@ async function createShop(req, res, next) {
     if (role === "vendor") {
       throw generateError(`You already have a shop.`, 401);
     }
-    await shopSchema.validateAsync(req.body);
+    console.log(req.body);
+    await shopSchema.validateAsync(req.body.shop);
     connection = await getConnection();
-    const { name, description, video, twitter, facebook, instagram } = req.body;
+    const {
+      name,
+      description,
+      video,
+      twitter,
+      facebook,
+      instagram,
+    } = req.body.shop;
 
     await connection.query(
       `

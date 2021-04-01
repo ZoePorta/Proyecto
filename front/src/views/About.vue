@@ -24,7 +24,7 @@
             >Zoe Porta</a
           >
           and I love programming, but my hobby is to create things on different
-          mediums. Currently I'm experimenting with clear resin.
+          mediums. Currently I'm trying with clear resin.
         </p>
 
         <p>

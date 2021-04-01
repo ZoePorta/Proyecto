@@ -158,7 +158,7 @@ button:focus {
 
 /* /Buttons */
 
-video {
+.video {
   border-radius: 1rem;
   border: var(--border);
   box-shadow: var(--shadow);

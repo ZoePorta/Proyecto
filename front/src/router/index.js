@@ -28,7 +28,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       if (isLoggedIn()) {
         next({
-          //Send user lo home
+          //Send user to home
           path: "/",
           query: { redirect: to.fullPath },
         });
@@ -164,6 +164,17 @@ const routes = [
       //Private route
 
       allowAnonymous: false,
+    },
+  },
+
+  {
+    path: "/my-shop",
+    name: "UShop",
+    component: () => import("../views/UShop.vue"),
+    meta: {
+      //Public route
+
+      allowAnonymous: true,
     },
   },
 

@@ -71,6 +71,7 @@
             type="range"
             id="minPrice"
             name="minPrice"
+            step="5"
             :min="searchDefault.minPrice"
             :max="searchDefault.maxPrice"
             v-model="search.minPrice"
@@ -81,6 +82,7 @@
             type="range"
             id="maxPrice"
             name="maxPrice"
+            step="5"
             :min="searchDefault.minPrice"
             :max="searchDefault.maxPrice"
             v-model="search.maxPrice"
@@ -260,7 +262,7 @@ export default {
       searchDefault: {
         available: false,
         words: "",
-        maxPrice: 1000,
+        maxPrice: 500,
         minPrice: 0,
         category: "",
         type: "",
@@ -272,7 +274,7 @@ export default {
       search: {
         available: false,
         words: "",
-        maxPrice: 1000,
+        maxPrice: 500,
         minPrice: 0,
         category: "",
         type: "",
@@ -358,6 +360,7 @@ export default {
 
       /* By color */
       if (search.colors.length) {
+        console.log(typeof search.colors);
         let searchColorArray = [];
         for (const color of search.colors) {
           searchColorArray.push(color.name);

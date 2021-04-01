@@ -115,9 +115,9 @@ const shopSchema = Joi.object().keys({
       generateError("Description can not be longer than 500 characters.", 400)
     ),
   video: Joi.string().uri().trim(),
-  twitter: Joi.string().uri().trim(),
-  facebook: Joi.string().uri().trim(),
-  instagram: Joi.string().uri().trim(),
+  twitter: Joi.string().uri().trim().allow("").optional(),
+  facebook: Joi.string().uri().trim().allow(""),
+  instagram: Joi.string().uri().trim().allow(""),
 });
 
 /////////

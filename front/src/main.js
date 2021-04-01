@@ -32,6 +32,7 @@ import {
   faPencilAlt,
   faPlus,
   faQuestionCircle,
+  faStore,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebook,
@@ -48,6 +49,7 @@ library.add(
   faShare,
   faPencilAlt,
   faPlus,
+  faStore,
   faQuestionCircle,
   faInstagram,
   faFacebook,

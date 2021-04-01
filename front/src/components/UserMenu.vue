@@ -6,10 +6,11 @@
       your orders!
     </p>
     <div id="nav">
-      <router-link :to="{ name: 'Profile' }">Profile</router-link> ●
+      <router-link :to="{ name: 'Profile' }">Profile</router-link>
+      ●
 
       <router-link :to="{ name: 'Orders' }">Orders</router-link> ●
-      <router-link :to="{ name: 'Addresses' }">Addresses</router-link>
+      <router-link :to="{ name: 'Addresses' }">Addresses</router-link> ●
     </div>
   </div>
 </template>
@@ -23,6 +24,7 @@ export default {
 <style scoped>
 #nav {
   width: 18rem;
+  max-width: 90vw;
   background: var(--block-bg-color);
   border-bottom: var(--border);
   box-shadow: var(--shadow);

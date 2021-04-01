@@ -1,29 +1,36 @@
 <template>
   <div id="menu">
-    <router-link id="home" :to="{ name: 'Home' }"
+    <router-link id="home" title="Home" :to="{ name: 'Home' }"
       ><img src="../assets/origami.svg" alt="Crafty logo" />
       <h1>Crafty</h1></router-link
     >
 
     <!-- Menu for logged users only -->
     <div class="user nav" v-if="logged">
-      <router-link :to="{ name: 'Wishlist', params: { userId } }" class="icon"
+      <router-link
+        title="Wishlist"
+        :to="{ name: 'Wishlist', params: { userId } }"
+        class="icon"
         ><font-awesome-icon icon="heart"
       /></router-link>
       <!--       <router-link :to="{ name: 'Orders' }" tag="button">Orders</router-link>
  -->
-      <router-link :to="{ name: 'Cart' }" class="icon">
+      <router-link title="Cart" :to="{ name: 'Cart' }" class="icon">
         <font-awesome-icon icon="shopping-cart" />
       </router-link>
-      <router-link :to="{ name: 'Profile' }" class="icon"
+      <router-link title="Profile" :to="{ name: 'Profile' }" class="icon"
         ><font-awesome-icon icon="user"
       /></router-link>
 
-      <router-link :to="{ name: 'About' }" class="icon"
+      <router-link title="My shop" :to="{ name: 'UShop' }" class="icon"
+        ><font-awesome-icon icon="store"
+      /></router-link>
+
+      <router-link title="About" :to="{ name: 'About' }" class="icon"
         ><font-awesome-icon icon="question-circle"
       /></router-link>
 
-      <button class="button" @click="logoutUser()">
+      <button title="log out" class="button" @click="logoutUser()">
         LOGOUT
       </button>
     </div>
@@ -31,14 +38,22 @@
 
     <!-- Menu for not logged users only -->
     <div class="anon nav" v-else>
-      <router-link :to="{ name: 'About' }" class="icon"
+      <router-link title="about" :to="{ name: 'About' }" class="icon"
         ><font-awesome-icon icon="question-circle"
       /></router-link>
 
-      <router-link :to="{ name: 'Register' }" tag="button" class="button"
+      <router-link
+        title="Register"
+        :to="{ name: 'Register' }"
+        tag="button"
+        class="button"
         >REGISTER</router-link
       >
-      <router-link :to="{ name: 'Login' }" tag="button" class="button"
+      <router-link
+        title="Login"
+        :to="{ name: 'Login' }"
+        tag="button"
+        class="button"
         >LOGIN</router-link
       >
     </div>
@@ -48,6 +63,7 @@
     <div v-show="showSearch" class="search">
       <input type="text" v-model="search" placeholder="Type something..." />
       <router-link
+        title="search"
         class="button"
         :to="{ name: 'Search', query: { words: search } }"
         tag="button"
@@ -91,7 +107,7 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Satisfy&display=swap");
 
 #menu {
-  width: 100vw;
+  width: 100%;
   background: var(--block-bg-color);
   border-bottom: var(--border);
   box-shadow: var(--shadow);

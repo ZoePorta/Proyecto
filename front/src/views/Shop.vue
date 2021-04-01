@@ -53,9 +53,10 @@
         </nav>
         <!-- Social Media -->
       </div>
-      <video :src="shop.video" autoplay loop>
+      <video class="video" v-if="shop.video" :src="shop.video" autoplay loop>
         Can not play.
       </video>
+      <div class="video" v-else><p>En construccion</p></div>
       <p class="description">{{ shop.description }}</p>
 
       <!-- Product list -->
@@ -141,7 +142,7 @@ h1 {
   margin: 1rem;
 }
 
-video {
+.video {
   width: 500px;
   max-width: 90vw;
 }
@@ -157,7 +158,7 @@ video {
       "info video";
   }
 
-  video {
+  .video {
     grid-area: video;
   }
 
